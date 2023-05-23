@@ -6,17 +6,20 @@ public class WebAppConfig extends AbstractAnnotationConfigDispatcherServletIniti
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return null;
+		return new Class<?>[] {
+			RootConfig.class,
+			JpaPersistenceConfig.class,
+			SecurityConfig.class
+		};
 	}
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class<?>[] { RootAppConfig.class };
+		return null;
 	}
 
 	@Override
 	protected String[] getServletMappings() {
 		return new String[] {"/"};
 	}
-	
 }
