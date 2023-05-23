@@ -28,7 +28,7 @@ public class BookService {
 	}
 
 	@Transactional
-	public List<Book> getBooks() {
+	public List<Book> getBooks() { // add paging through http request headers
 		return bookRepository.findAll(PageRequest.of(0, 20)).getContent();
 	}
 
