@@ -27,9 +27,10 @@ public class BookService {
 		return "home";
 	}
 
-	@Transactional
 	public List<Book> getBooks() { // add paging through http request headers
-		return bookRepository.findAll(PageRequest.of(0, 20)).getContent();
+		List<Book> books = bookRepository.findAll(PageRequest.of(0, 20)).getContent();
+		books.forEach(b -> System.out.println(b.getAuthors()));
+		return books;
 	}
 
 	@Transactional

@@ -1,13 +1,21 @@
 package com.mkrajcovic.mybooks.persistence;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.mkrajcovic.mybooks.persistence.enums.Language;
 
 @Entity
 @Table(name = "t_book", schema = "library")
@@ -32,19 +40,33 @@ public class Book {
 	private Integer pages;
 
 	// these enums are one to one - inner join
+	@Column(name = "n_binding_type_id")
 	private Integer bindingType; // ID or the whole object?
 
+	@Column(name = "n_format_id")
 	private Integer formatId; // ID or the whole object?
 
 	@Column(name = "s_publisher")
 	private String publisher;
 
-	private Integer languageId; // ID or the whole object?
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "n_language_id")
+	private Language language; // ID or the whole object?
 
-	@Column(name = "d_from")
+	@Column(name = "n_series_number")
+	private Integer orderInSeries;
+
+	@ManyToMany(fetch = FetchType.EAGER) // I do not want this, but this is the way it works at least
+	@JoinTable(schema = "library", name = "t_book_author", 
+		joinColumns = @JoinColumn(name = "n_book_id"), 
+		inverseJoinColumns = @JoinColumn(name = "n_author_id")
+	)
+	private List<Author> authors;
+
+	@Column(name = "d_from", insertable = false)
 	private LocalDateTime from;
 
-	@Column(name = "d_to")
+	@Column(name = "d_to", insertable = false)
 	private LocalDateTime to;
 
 	public String getIsbn() {
@@ -95,12 +117,24 @@ public class Book {
 		this.publisher = publisher;
 	}
 
-	public Integer getLanguageId() {
-		return languageId;
+	public Language getLanguage() {
+		return language;
 	}
 
-	public void setLanguageId(Integer languageId) {
-		this.languageId = languageId;
+	public void setLanguage(Language language) {
+		this.language = language;
+	}
+
+	public void setLanguageId(Language language) {
+		this.language = language;
+	}
+
+	public int getOrderInSeries() {
+		return this.orderInSeries;
+	}
+
+	public List<Author> getAuthors() {
+		return this.authors;
 	}
 
 	public LocalDateTime getFrom() {

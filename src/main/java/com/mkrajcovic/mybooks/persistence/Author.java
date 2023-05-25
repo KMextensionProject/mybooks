@@ -1,10 +1,13 @@
 package com.mkrajcovic.mybooks.persistence;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -16,10 +19,11 @@ public class Author {
 	@Column(name = "n_author_id")
 	private Integer id;
 
-	@Column(name = "s_name")
+	@Column(name = "s_author_name")
 	private String name;
 
-	//List<Book> books; many books to one author
+	@ManyToMany(mappedBy = "authors")
+	private List<Book> books;
 
 	public String getName() {
 		return name;
@@ -31,5 +35,14 @@ public class Author {
 
 	public Integer getId() {
 		return id;
+	}
+
+	public List<Book> getBooks() {
+		return this.books;
+	}
+
+	@Override
+	public String toString() {
+		return "Author [id=" + id + ", name=" + name + "]";
 	}
 }
