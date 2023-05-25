@@ -15,6 +15,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.mkrajcovic.mybooks.persistence.enums.BindingType;
+import com.mkrajcovic.mybooks.persistence.enums.Format;
 import com.mkrajcovic.mybooks.persistence.enums.Language;
 
 @Entity
@@ -39,19 +41,20 @@ public class Book {
 	@Column(name = "n_pages")
 	private Integer pages;
 
-	// these enums are one to one - inner join
-	@Column(name = "n_binding_type_id")
-	private Integer bindingType; // ID or the whole object?
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "n_binding_type_id")
+	private BindingType bindingType;
 
-	@Column(name = "n_format_id")
-	private Integer formatId; // ID or the whole object?
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "n_format_id")
+	private Format format;
 
 	@Column(name = "s_publisher")
 	private String publisher;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "n_language_id")
-	private Language language; // ID or the whole object?
+	private Language language;
 
 	@Column(name = "n_series_number")
 	private Integer orderInSeries;
@@ -59,8 +62,7 @@ public class Book {
 	@ManyToMany(fetch = FetchType.EAGER) // I do not want this, but this is the way it works at least
 	@JoinTable(schema = "library", name = "t_book_author", 
 		joinColumns = @JoinColumn(name = "n_book_id"), 
-		inverseJoinColumns = @JoinColumn(name = "n_author_id")
-	)
+		inverseJoinColumns = @JoinColumn(name = "n_author_id"))
 	private List<Author> authors;
 
 	@Column(name = "d_from", insertable = false)
@@ -93,20 +95,20 @@ public class Book {
 		this.pages = pages;
 	}
 
-	public Integer getBindingType() {
+	public BindingType getBindingType() {
 		return bindingType;
 	}
 
-	public void setBindingType(Integer bindingType) {
+	public void setBindingType(BindingType bindingType) {
 		this.bindingType = bindingType;
 	}
 
-	public Integer getFormatId() {
-		return formatId;
+	public Format getFormat() {
+		return format;
 	}
 
-	public void setFormatId(Integer formatId) {
-		this.formatId = formatId;
+	public void setFormat(Format format) {
+		this.format = format;
 	}
 
 	public String getPublisher() {

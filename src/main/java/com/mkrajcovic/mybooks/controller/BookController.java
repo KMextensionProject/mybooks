@@ -31,6 +31,12 @@ public class BookController {
 		return bookService.getHomePage();
 	}
 
+	@GetMapping(path = "/grid")
+	@PreAuthorize("hasRole('USER')")
+	public String grid() {
+		return "bookGrid";
+	}
+
 	@GetMapping(path = "/books/", produces = "application/json")
 	@PreAuthorize("hasRole('USER')")
 	@ResponseBody
