@@ -8,7 +8,6 @@ public class WebAppConfig extends AbstractAnnotationConfigDispatcherServletIniti
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class<?>[] {
 			RootConfig.class,
-			JpaPersistenceConfig.class,
 			SecurityConfig.class
 		};
 	}

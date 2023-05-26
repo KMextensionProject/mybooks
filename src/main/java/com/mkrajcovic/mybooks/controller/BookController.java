@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.mkrajcovic.mybooks.persistence.Book;
+import com.mkrajcovic.mybooks.db.TypeMap;
 import com.mkrajcovic.mybooks.service.BookService;
 
 @Controller
@@ -40,14 +40,14 @@ public class BookController {
 	@GetMapping(path = "/books/", produces = "application/json")
 	@PreAuthorize("hasRole('USER')")
 	@ResponseBody
-	public List<Book> listBooks() {
+	public List<TypeMap> listBooks() {
 		return bookService.getBooks();
 	}
 
 	@GetMapping(path = "/books/{id}", produces = "application/json")
 	@PreAuthorize("hasRole('USER')")
 	@ResponseBody
-	public Book getBook(@PathVariable("id") Integer id) {
+	public TypeMap getBook(@PathVariable("id") Integer id) {
 		return bookService.getBook(id);
 	}
 }
