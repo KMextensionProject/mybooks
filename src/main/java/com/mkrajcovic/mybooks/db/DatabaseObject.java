@@ -1,86 +1,93 @@
 package com.mkrajcovic.mybooks.db;
 
+import static com.mkrajcovic.mybooks.db.AccessibleContext.getBean;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public abstract class DatabaseObject<T> {
 
-	private static final Logger logger = Logger.getAnonymousLogger();
+	protected static final Logger LOG = Logger.getAnonymousLogger();
 
-//	private static final String INFINITY_MYSQL = Timestamp.valueOf(LocalDateTime.of(9999, 12, 31, 11, 59, 59)).toString();
-//	private static final String INFINITY_POSTGRES = "infinity";
-
-	protected String databaseTable;
+	protected String sourceTable;
 	protected String identifier;
 
-	private Database database;
-	private JdbcTemplate jdbcTemplate;
-	private ColumnNameTranslator columnNameTranslator;
+	protected final Database database;
+	protected final JdbcTemplate jdbcTemplate;
+
+	private ColumnTranslator columnTranslator;
 
 	protected DatabaseObject() {
-		this.database = AccessibleContext.getBean(Database.class);
-		this.jdbcTemplate = AccessibleContext.getBean(JdbcTemplate.class);
-		this.columnNameTranslator = new ColumnNameTranslator();
+		database = getBean(Database.class);
+		jdbcTemplate = getBean(JdbcTemplate.class);
+		columnTranslator = new ColumnTranslator();
 	}
 
-	public T selectById(Long id) {
-		return setByData(database.select()
-			.from(databaseTable)
+	protected abstract void update();
+
+	protected abstract void delete();
+
+	protected abstract T setByData(TypeMap data);
+
+	protected abstract TypeMap toTypeMap();
+
+	protected TypeMap getAsDbRow() {
+		return columnTranslator.toColumnNames(toTypeMap());
+	}
+
+	public T selectById(Integer id) {
+		return setByData(selectByIdInternal(id));
+	}
+
+	public T selectByIdWithCheckExistence(Integer id) {
+		 TypeMap record = selectByIdInternal(id);
+		 if (record.isEmpty()) {
+			 throw new IllegalArgumentException("The requested record with id " + id + " does not exist");
+		 }
+		 return setByData(record);
+	}
+
+	private TypeMap selectByIdInternal(Integer id) {
+		return database.select()
+			.from(sourceTable)
 			.where(identifier, id)
-			.asMap());
+			.asMap();
 	}
 
 	public void insert() {
-		String insertStatement = constructInsertStatement();
-		logger.info(insertStatement);
+		String insertStatement = buildInsertStatement();
+		LOG.info(insertStatement);
 		// https://stackoverflow.com/questions/201887/primary-key-from-inserted-row-jdbc
 		try {
 			PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
-					.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
+					.prepareStatement(insertStatement);
+			preparedStatement.executeUpdate(insertStatement, Statement.RETURN_GENERATED_KEYS);
 
 			ResultSet result = preparedStatement.getGeneratedKeys();
 			if (result.next()) {
 				TypeMap data = toTypeMap();
-				// add new ID after insert
-				data.put(columnNameTranslator.removeColumnPrefix(identifier), result.getInt(1));
-				// add it to POJO properties
+				// add new ID to model after insert
+				data.put(columnTranslator.removeColumnPrefix(identifier), result.getInt(1));
 				setByData(data);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.severe(() -> "insert statement failed with " + e.getMessage());
 		}
-//		jdbcTemplate.update(insertStatement);
-
-		// get this record from db and set generated fields
-//		setByData(database.select()
-//			.from(databaseTable)
-//			.orderBy(identifier, OrderByDirection.DESC)
-//			.limit(1)
-//			.asMap());
 	}
 
-	private String constructInsertStatement() {
-//		String write = getCurrentTimestamp().toString();
+	private String buildInsertStatement() {
 		TypeMap data = getAsDbRow();
 		data.remove(identifier); // PK assigned by DB
-		data.put("u_uid_id", UUID.randomUUID().toString());
-		// remove these for postgresql
-//		data.put("d_to", INFINITY_POSTGRES); // defaults to 'infinity'
-//		data.put("d_from", write); // defaults to now()
-//		data.put("t_write", write); // defaults to 'infinity', but not using it right now
 
 		StringBuilder insert = new StringBuilder();
 		insert.append("INSERT INTO ");
-		insert.append(databaseTable);
+		insert.append(sourceTable);
 
 		StringBuilder columns = new StringBuilder(" (");
 		StringBuilder values  = new StringBuilder(" VALUES (");
@@ -94,10 +101,10 @@ public abstract class DatabaseObject<T> {
 			if (value instanceof CharSequence) {
 				value = value.toString()
 					.replace('\n', ' ')
-					.replace("'", "\'")
-					.replace('"', '\'');
+//					.replace("'", "\'")
+					.replace('"', '\"'); // regex?!
 
-				value = "\"" + value + "\"";
+				value = "'" + value + "'";
 			}
 			values.append(value);
 			values.append(",");
@@ -113,46 +120,35 @@ public abstract class DatabaseObject<T> {
 				.toString();
 	}
 
-	public void update() {
-		// invalidate existing record
-		delete();
-		// insert new record with new data and ID
-		insert();
-	}
-
-	private String constructUpdateStatement() {
-		String write = getCurrentTimestamp().toString();
-		TypeMap data = getAsDbRow();
+	// can be reused by childs
+	protected String buildUpdateStatement(TypeMap data) {
+		Integer id = data.getInteger(identifier);
+		data.remove(identifier);
 
 		StringBuilder update = new StringBuilder("UPDATE ");
-		update.append(databaseTable);
-		update.append(" SET d_to = '");
-		update.append(write);
-//		update.append("', t_write = '");
-//		update.append(write);
-		update.append("' WHERE ");
-		update.append(identifier);
-		update.append(" = ");
-		update.append(data.getLong(identifier));
+		update.append(sourceTable)
+			  .append(" SET ");
+
+		for (Map.Entry<String, Object> entry : data.entrySet()) {
+			update.append(entry.getKey())
+				  .append(" = ");
+
+			Object value = entry.getValue();
+			if (value instanceof CharSequence) {
+				update.append("'")
+					  .append(value)
+					  .append("'");
+			} else {
+				update.append(value);
+			}
+			update.append(", ");
+		}
+		update.deleteCharAt(update.length() - 2)
+			  .append(" WHERE ")
+			  .append(identifier)
+			  .append(" = ")
+			  .append(id);
 
 		return update.toString();
-	}
-
-	public void delete() {
-		String updateStatement = constructUpdateStatement();
-		logger.info(updateStatement);
-		jdbcTemplate.update(updateStatement);
-	}
-
-	private Timestamp getCurrentTimestamp() {
-		return Timestamp.valueOf(LocalDateTime.now());
-	}
-
-	protected abstract T setByData(TypeMap data);
-
-	protected abstract TypeMap toTypeMap();
-
-	private TypeMap getAsDbRow() {
-		return columnNameTranslator.translateToColumnNames(toTypeMap());
 	}
 }

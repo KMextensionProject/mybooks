@@ -18,7 +18,7 @@ import org.springframework.jdbc.core.RowMapper;
 // TODO: add documentation with hints
 public final class Select {
 
-	private static final Logger logger = Logger.getAnonymousLogger();
+	private static final Logger LOG = Logger.getAnonymousLogger();
 
 	private JdbcTemplate jdbcTemplate;
 	private StringBuilder selectBuilder;
@@ -27,9 +27,10 @@ public final class Select {
 	private boolean distinctAlreadyApplied;
 	private int requestedColumnsCount;
 	private int limit;
+	private Paging pagingBound;
 	private Set<OrderBy> orderByColumns;
 	private RowMapper<TypeMap> cMapRowMapper;
-	private ColumnNameTranslator fieldTranslator;
+	private ColumnTranslator fieldTranslator;
 	private DatabaseVendor databaseVendor;
 
 	Select(JdbcTemplate jdbcTemplate, RowMapper<TypeMap> rowMapper, DatabaseVendor vendor, String... columns) {
@@ -39,7 +40,7 @@ public final class Select {
 		this.requestedColumnsCount = columns.length;
 		this.cMapRowMapper = rowMapper;
 		this.orderByColumns = new LinkedHashSet<>();
-		this.fieldTranslator = new ColumnNameTranslator();
+		this.fieldTranslator = new ColumnTranslator();
 		this.databaseVendor = vendor;
 		select(columns);
 	}
@@ -131,7 +132,7 @@ public final class Select {
 		Object value;
 		for (Map.Entry<String, Object> entry : queryParams.getQueryEntries()) {
 			value = entry.getValue();
-			field = fieldTranslator.translateToColumnName(entry.getKey(), value);
+			field = fieldTranslator.toColumnName(entry.getKey(), value); // timestamp passed by UI?
 
 			where(field, value);
 		}
@@ -163,7 +164,7 @@ public final class Select {
 					.map(val -> val.replace('\n', ' '))
 					.map(val -> val.replace("'", "\'"))
 					.map(val -> val.replace('"', '\''))
-					.map(val -> "\"".concat(val).concat("\""));
+					.map(val -> "\"".concat(val).concat("\"")); // is this right to use double quotes?
 		}
 		whereBuilder.append(valuesJoiningStream.collect(Collectors.joining(",")))
 					.append(")");
@@ -253,6 +254,11 @@ public final class Select {
 		return this;
 	}
 
+	public Select range(Paging pagingBound) {
+		this.pagingBound = pagingBound;
+		return this;
+	}
+
 	public class OrderBy {
 
 		private String column;
@@ -310,15 +316,15 @@ public final class Select {
 	}
 
 	// TODO: add wherePreparedStatement() - dynamic values
-	// TODO: if it if nothing returns, let it do it without throwing an exception but an empty map
+	// TODO: if it returns nothing, let it do it without throwing an exception but return empty map instead
 	public TypeMap asMap() {
 		appendRemainingParts();
-		logSelect(selectBuilder);
+		logSelect();
 
 		try {
 			return jdbcTemplate.queryForObject(selectBuilder.toString(), cMapRowMapper);
 		} catch (EmptyResultDataAccessException emptyResult) {
-			System.out.println(emptyResult.getMostSpecificCause());
+//			System.out.println(emptyResult.getMostSpecificCause());
 			return new TypeMap();
 		}
 	}
@@ -326,31 +332,31 @@ public final class Select {
 	// TODO: if it if nothing returns, let it do it without throwing an exception but an empty list
 	public List<TypeMap> asList() {
 		appendRemainingParts();
-		logSelect(selectBuilder);
+		logSelect();
 
 		try {
 			return jdbcTemplate.query(selectBuilder.toString(), cMapRowMapper);
 		} catch (DataAccessException dae) {
-			System.out.println(dae.getMostSpecificCause());
+			LOG.severe(() -> dae.getMessage());
 			return Collections.emptyList();
 		}
 	}
 
 	public Boolean asBoolean() {
 		appendRemainingParts();
-		logSelect(selectBuilder);
+		logSelect();
 		return queryForObject(Boolean.class);
 	}
 
 	public Long asLong() {
 		appendRemainingParts();
-		logSelect(selectBuilder);
+		logSelect();
 		return queryForObject(Long.class);
 	}
 
 	public String asString() {
 		appendRemainingParts();
-		logSelect(selectBuilder);
+		logSelect();
 		return queryForObject(String.class);
 	}
 
@@ -361,7 +367,10 @@ public final class Select {
 			appendOrderBy();
 		}
 
-		if (limit > 0) {
+		// prefer one or the other
+		if (pagingBound != null) {
+			appendPaging();
+		} else if (limit > 0) {
 			appendLimit();
 		}
 	}
@@ -380,17 +389,25 @@ public final class Select {
 		selectBuilder.append(columns);
 	}
 
+	private void appendPaging() {
+		selectBuilder.append(" OFFSET ")
+					 .append(this.pagingBound.getFrom() - 1)
+					 .append(" ROWS FETCH FIRST ")
+					 .append(this.pagingBound.getTo())
+					 .append(" ROWS ONLY");
+	}
+
 	private void appendLimit() {
 		switch(databaseVendor) {
 		case ORACLE:
 			selectBuilder.append(" FETCH FIRST ")
-				.append(limit)
-				.append(" ROWS ONLY");
+						 .append(limit)
+						 .append(" ROWS ONLY");
 			break;
 		case POSTGRES:
 		case MYSQL:
 			selectBuilder.append(" LIMIT ")
-				.append(limit);
+						 .append(limit);
 			break;
 		default :
 			return;
@@ -403,22 +420,20 @@ public final class Select {
 			throw new IllegalArgumentException("Exactly one column must appear in the"
 				+ " select clause to directly ask for its value in this manner.");
 		}
-//		return jdbcTemplate.queryForObject(sql, rowMapper); // could use for StringMap with values converted
 		try {
 			return jdbcTemplate.queryForObject(selectBuilder.toString(), classObj);
 		} catch (EmptyResultDataAccessException dae) {
-			System.out.println(dae.getMostSpecificCause());
+			LOG.severe(() -> dae.getMessage());
 			return null;
 		}
 	}
 
-	private static void logSelect(CharSequence select) {
-		logger.info(() -> "executing: " + select);
+	private void logSelect() {
+		LOG.info(() -> selectBuilder.toString());
 	}
 
 	@Override
 	public String toString() {
-//		appendRemainingParts();
 		return this.selectBuilder.toString();
 	}
 }

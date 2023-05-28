@@ -5,9 +5,7 @@ import java.util.List;
 public class Author {
 
 	private Integer id;
-
 	private String name;
-
 	private List<Book> books;
 
 	public String getName() {

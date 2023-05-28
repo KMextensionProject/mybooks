@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/**").hasRole("USER")
 			.and().formLogin().defaultSuccessUrl("/home", true) //when mybooks/ is typed, redirect automatically?
 			.and().logout()
+			.and().httpBasic() // TODO: remove this after testing
 			.and().csrf().disable();
 	}
 

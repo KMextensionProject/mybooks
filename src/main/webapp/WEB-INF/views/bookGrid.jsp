@@ -38,7 +38,7 @@ $("#jsGrid").jsGrid({
  
                 $.ajax({
                     // CORS policy enable on local server for now
-                    url: "http://localhost:8080/mybooks/books/",
+                    url: "http://localhost:8080/mybooks/book/",
                     dataType: "json"
                 }).done(function(response) {
                     d.resolve(response);
@@ -49,6 +49,11 @@ $("#jsGrid").jsGrid({
         },
 
     fields: [{
+    	name: "book_id",
+    	type: "text",
+    	width: 15,
+    	visible: false
+    }, {
         name: "isbn",
         title: 'ISBN',
         type: "text",
@@ -59,8 +64,8 @@ $("#jsGrid").jsGrid({
         type: "text",
         width: 50
     }, {
-        name: "authors[0].name",
-        title: 'Author',
+        name: "author_name",
+        title: 'Leading author',
         type: "text",
         width: 50
     }, {
@@ -69,30 +74,35 @@ $("#jsGrid").jsGrid({
         type: "text",
         width: 30
     }, {
-        name: "bindingType.name",
+        name: "binding_type_label",
         title: 'Binding',
         type: "text",
-        width: 50
+        width: 25
     }, {
-        name: "format.dimensions",
+        name: "format_label",
         title: 'Format',
         type: "text",
         width: 30
     }, {
-        name: "language.name",
+    	name: "publisher",
+    	title: "Publisher",
+    	type: "text",
+    	width: 60
+	}, {
+        name: "language_code",
         title: "Language",
         type: "text",
-        width: 50
+        width: 25
     },  {
-        name: "orderInSeries",
+        name: "series_number",
         title: "Series #",
         type: "text",
-        width: 50
+        width: 18
     }, {
         type: "control" 
     }]
 });
 </script>
- 
+
 </body>
 </html>

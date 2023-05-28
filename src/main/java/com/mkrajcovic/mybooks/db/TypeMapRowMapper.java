@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class TypeMapRowMapper implements RowMapper<TypeMap> {
 
-	private ColumnNameTranslator translator;
+	private ColumnTranslator translator;
 
 	public TypeMapRowMapper() {
-		this.translator = new ColumnNameTranslator();
+		this.translator = new ColumnTranslator();
 	}
 
 	@Override
