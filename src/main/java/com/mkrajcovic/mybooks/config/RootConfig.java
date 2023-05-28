@@ -1,8 +1,14 @@
 package com.mkrajcovic.mybooks.config;
 
+import java.util.Arrays;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +23,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
+@EnableCaching
 @EnableWebMvc
 @EnableTransactionManagement
 @PropertySource("classpath:db/connection.properties")
@@ -48,6 +55,17 @@ public class RootConfig {
 		// so we don't have to configure SQL queries explicitly
 		dataSource.setSchema(environment.getProperty("db.sec.schema"));
 		return dataSource;
+	}
+
+	@Bean
+	public CacheManager cacheManager() {
+		SimpleCacheManager cacheManager = new SimpleCacheManager();
+		cacheManager.setCaches(Arrays.asList(
+				new ConcurrentMapCache("format"),
+				new ConcurrentMapCache("binding"),
+				new ConcurrentMapCache("language")));
+
+		return cacheManager;
 	}
 
 	@Bean

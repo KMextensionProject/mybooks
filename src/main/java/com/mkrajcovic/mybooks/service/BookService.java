@@ -34,7 +34,6 @@ public class BookService {
 				"D.s_code AS s_language_code",
 				"E.s_author_name")
 			.from("library.t_book A")
-			// add something like with hint on these enums
 			.join("library_enum.e_binding_type B").on("A.n_binding_type_id", "B.n_binding_type_id")
 			.join("library_enum.e_format C").on("A.n_format_id", "C.n_format_id")
 			.join("library_enum.e_language D").on("A.n_language_id", "D.n_language_id")

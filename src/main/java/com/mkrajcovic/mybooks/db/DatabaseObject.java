@@ -15,7 +15,7 @@ public abstract class DatabaseObject<T> {
 
 	protected static final Logger LOG = Logger.getAnonymousLogger();
 
-	protected String sourceTable;
+	protected String sourceTable; // doplnit view name, bude sa preferovat pri selektoch
 	protected String identifier;
 
 	protected final Database database;
