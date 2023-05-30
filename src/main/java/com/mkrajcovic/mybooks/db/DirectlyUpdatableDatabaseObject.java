@@ -13,31 +13,47 @@ import java.time.LocalDateTime;
 public abstract class DirectlyUpdatableDatabaseObject<T> extends DatabaseObject<T> {
 
 	/**
-	 * Performs update operation on underlying record with no duplication to
-	 * maintain history records.
+	 * Performs update operation on underlying record in database with no record
+	 * duplication as used for storing history records.<br>
+	 * Although the value as specified by rowValidityStartDateColumn is reset to
+	 * the moment 
 	 */
 	@Override
 	public void update() {
 		TypeMap data = getAsDbRow();
-		data.put("d_from", Timestamp.valueOf(LocalDateTime.now()).toString()); // toto je na kokot
+		data.put(rowValidityStartDateColumn, Timestamp.valueOf(LocalDateTime.now()).toString());
 		String updateStatement = buildUpdateStatement(data);
 		LOG.info(updateStatement);
 		jdbcTemplate.update(updateStatement);
 	}
 
-	// TODO: make d_to generic / user defined field
 	/**
-	 * Directly updates the database source table by setting the d_to system field
-	 * to current timestamp, which invalidates the record from the moment of this
-	 * method call.
+	 * Directly updates the database source table by setting the
+	 * rowValidityEndDateColumn field to current timestamp, which 
+	 * invalidates the record from the moment of this method call.
 	 */
 	@Override
 	public void delete() {
 		TypeMap data = new TypeMap(
 			identifier, getAsDbRow().getInteger(identifier),
-			"d_to", Timestamp.valueOf(LocalDateTime.now()).toString());
+			rowValidityEndDateColumn, Timestamp.valueOf(LocalDateTime.now()).toString());
 		String invalidationStatement = buildUpdateStatement(data);
 		LOG.info(invalidationStatement);
 		jdbcTemplate.update(invalidationStatement);
+	}
+
+	/**
+	 * Permanently deletes the record by id of the object from database.
+	 */
+	public void hardDelete() {
+		Integer id = getAsDbRow().getInteger(identifier);
+		String deleteStatement = new StringBuilder("DELETE FROM ")
+			.append(sourceTable)
+			.append("WHERE ")
+			.append(identifier)
+			.append(" = ")
+			.append(id).toString();
+		LOG.info(deleteStatement);
+		jdbcTemplate.update(deleteStatement);
 	}
 }

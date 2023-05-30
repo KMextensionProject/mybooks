@@ -7,16 +7,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.util.Assert;
 
 public abstract class DatabaseObject<T> {
 
 	protected static final Logger LOG = Logger.getAnonymousLogger();
 
-	protected String sourceTable; // doplnit view name, bude sa preferovat pri selektoch
+	protected String sourceTable;
+	protected String sourceView;
 	protected String identifier;
+	protected String rowValidityStartDateColumn;
+	protected String rowValidityEndDateColumn;
 
 	protected final Database database;
 	protected final JdbcTemplate jdbcTemplate;
@@ -27,7 +32,23 @@ public abstract class DatabaseObject<T> {
 		database = getBean(Database.class);
 		jdbcTemplate = getBean(JdbcTemplate.class);
 		columnTranslator = new ColumnTranslator();
+		handlePropertiesSet();
 	}
+
+	private void handlePropertiesSet() {
+		initTableMetadata();
+		// validate
+		Objects.requireNonNull(sourceTable, "sourceTable must be initialized");
+		Objects.requireNonNull(identifier, "primary key/identifier must be initialized");
+		if (rowValidityStartDateColumn == null) {
+			rowValidityStartDateColumn = "d_from";
+		}
+		if (rowValidityEndDateColumn == null) {
+			rowValidityEndDateColumn = "d_to";
+		}
+	}
+
+	protected abstract void initTableMetadata();
 
 	protected abstract void update();
 
@@ -41,10 +62,30 @@ public abstract class DatabaseObject<T> {
 		return columnTranslator.toColumnNames(toTypeMap());
 	}
 
+	/**
+	 * If the sourceView property is set, then it will be preferred over
+	 * sourceTable in select statements. It is beneficial if the view is
+	 * restricting data in some way e.g. selecting only valid rows based on
+	 * validity label or date.
+	 *
+	 * @param id
+	 * @return
+	 */
 	public T selectById(Integer id) {
 		return setByData(selectByIdInternal(id));
 	}
 
+	/**
+	 * If the sourceView property is set, then it will be preferred over
+	 * sourceTable in select statements. It is beneficial if the view is
+	 * restricting data in some way e.g. selecting only valid rows based on
+	 * validity label or date.<br>
+	 * This method also checks the presence of the result and throws
+	 * IllegalArgumentException if there is no data found under specified id.
+	 *
+	 * @param id
+	 * @return
+	 */
 	public T selectByIdWithCheckExistence(Integer id) {
 		 TypeMap record = selectByIdInternal(id);
 		 if (record.isEmpty()) {
@@ -54,12 +95,18 @@ public abstract class DatabaseObject<T> {
 	}
 
 	private TypeMap selectByIdInternal(Integer id) {
+		Assert.notNull(id, "selecting ID should never be null");
 		return database.select()
-			.from(sourceTable)
+			.from(sourceView != null ? sourceView : sourceTable)
 			.where(identifier, id)
 			.asMap();
 	}
 
+	/**
+	 * Inserts the contents of this object into configured sourceTable and
+	 * automatically fills the assigned primary key/identifier by database to
+	 * this object.
+	 */
 	public void insert() {
 		String insertStatement = buildInsertStatement();
 		LOG.info(insertStatement);
@@ -120,7 +167,6 @@ public abstract class DatabaseObject<T> {
 				.toString();
 	}
 
-	// can be reused by childs
 	protected String buildUpdateStatement(TypeMap data) {
 		Integer id = data.getInteger(identifier);
 		data.remove(identifier);

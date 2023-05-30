@@ -27,6 +27,7 @@ public class BookService {
 		return "home";
 	}
 
+	// listovacka + searchovacka potom
 	public List<TypeMap> getBooks() { // add paging through http request headers
 		return db.select("A.*", 
 				"B.s_name AS s_binding_type_label",
@@ -37,7 +38,7 @@ public class BookService {
 			.join("library_enum.e_binding_type B").on("A.n_binding_type_id", "B.n_binding_type_id")
 			.join("library_enum.e_format C").on("A.n_format_id", "C.n_format_id")
 			.join("library_enum.e_language D").on("A.n_language_id", "D.n_language_id")
-			// join and select separately
+			// join and select these authors separately
 			.join("library.t_book_author BA").on("A.n_book_id", "BA.n_book_id")
 			.join("library.t_author E").on("BA.n_author_id", "E.n_author_id")
 			.where("A.d_to", "infinity")
@@ -57,10 +58,13 @@ public class BookService {
 		newBook.setByData(book);
 		newBook.insert();
 
-		// insert book id and author id into cross table
-		// there will be 3 inserts totaly
+		// v datach mi dojdu aj autori.. takze si ich poselektujem
+		// ak nebudu existovat, tak ich nezakladam, ale hodim validacny error
+		// TODO: vystavit input schemu
 
-		// author will already exist..if not, throw error
+		// cross tabulka nebude mat tuto knihu este, takze netreba overovat...
+		// staci insertnut do nej..
+
 		// author will be created beforehand from within its own form
 
 		return newBook.getBookId();
@@ -72,7 +76,9 @@ public class BookService {
 		book.setBookId(id);
 		book.delete();
 
-		// delete its relationship in cross table with hard delete
+		// delete all autho-book relationship ?
+		// knihu uz mozno nechcem, alebo ju nemam ale ta kniha patri stale pod toho autora...
+		// nemusim to mazat, staci, ze ta kniha bude nevalidna.
 	}
 
 	@Transactional
@@ -82,5 +88,6 @@ public class BookService {
 			.update();
 
 		// could it be meaningful to update book / author relationship?
+		// zmena autora napr.
 	}
 }

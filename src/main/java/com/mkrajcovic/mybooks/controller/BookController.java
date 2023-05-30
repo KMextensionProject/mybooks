@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -50,6 +49,7 @@ public class BookController {
 
 	@PostMapping(path = "book", consumes = "application/json")
 	@PreAuthorize("hasRole('USER')")
+	@ResponseBody
 	public ResponseEntity<Object> createBook(@RequestBody TypeMap bookData) {
 		Integer id = bookService.createBook(bookData);
 		return ResponseEntity.created(URI.create("/book/" + id)).build();
@@ -69,7 +69,7 @@ public class BookController {
 		return bookService.getBook(id);
 	}
 
-	@PutMapping(path = "/book/{id}", consumes = "application/json") // PUT?
+	@PostMapping(path = "/book/{id}", consumes = "application/json") // PUT?
 	@PreAuthorize("hasRole('ADMIN')")
 	public void updateBook(@PathVariable Integer id, @RequestBody TypeMap book) {
 		bookService.updateBook(id, book);

@@ -22,13 +22,14 @@ public class EnumService {
 	@Autowired
 	private Database database;
 
+	// TODO: use views where data are restricted by d_to
+
 	@Cacheable(cacheNames = BINDING, sync = true)
 	public List<TypeMap> getBindingTypes() {
 		return database.select(
 				"n_binding_type_id", 
 				"s_name")
 			.from("library_enum.e_binding_type")
-			.where("d_to", "infinity") // use views because of this
 			.asList();
 	}
 
@@ -39,7 +40,6 @@ public class EnumService {
 				"s_code",
 				"s_dimensions")
 			.from("library_enum.e_format")
-			.where("d_to", "infinity")
 			.asList();
 	}
 
@@ -50,7 +50,6 @@ public class EnumService {
 				"s_code",
 				"s_name")
 			.from("library_enum.e_language")
-			.where("d_to", "infinity")
 			.asList();
 	}
 

@@ -19,13 +19,15 @@ public class Book extends DirectlyUpdatableDatabaseObject<Book> {
 	private LocalDateTime from;
 	private LocalDateTime to;
 
-	public Book() {
+	@Override
+	protected void initTableMetadata() {
 		this.sourceTable = "library.t_book";
+//		this.sourceView = "library.v_book";
 		this.identifier = "n_book_id";
 	}
 
 	/**
-	 * Performs mutable operation on current object.
+	 * Performs mutable operation on current object.<br>
 	 * Rewrites internal fields that are contained in the map.
 	 */
 	@Override
