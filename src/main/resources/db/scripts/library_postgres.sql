@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS library.t_book_author
 (
     n_book_id integer NOT NULL,
     n_author_id integer NOT NULL,
+    b_lead_author boolean NOT NULL DEFAULT false,
     CONSTRAINT book_author_unq UNIQUE (n_book_id, n_author_id),
     CONSTRAINT n_author_id_fk FOREIGN KEY (n_author_id)
         REFERENCES library.t_author (n_author_id) MATCH SIMPLE
@@ -157,13 +158,13 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS library.t_book_author
     OWNER to postgres;
 
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (1, 1);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (2, 1);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (3, 1);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (4, 1);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (5, 1);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (6, 1);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (7, 1);
+INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (1, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (2, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (3, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (4, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (5, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (6, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (7, 1, true);
 
 
 ---------------------------------------

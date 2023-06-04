@@ -7,6 +7,7 @@ public class BookAuthor extends DirectlyUpdatableDatabaseObject<BookAuthor> {
 
 	private Integer bookId;
 	private Integer authorId;
+	private Boolean isLeadAuthor;
 
 	@Override
 	protected void initTableMetadata() {
@@ -25,6 +26,7 @@ public class BookAuthor extends DirectlyUpdatableDatabaseObject<BookAuthor> {
 
 		bookId = map.getInteger("book_id");
 		authorId = map.getInteger("author_id");
+		isLeadAuthor = map.getBoolean("lead_author");
 
 		return this;
 	}
@@ -33,7 +35,8 @@ public class BookAuthor extends DirectlyUpdatableDatabaseObject<BookAuthor> {
 	public TypeMap toTypeMap() {
 		return new TypeMap(
 			"book_id", this.bookId,
-			"author_id", this.authorId);
+			"author_id", this.authorId,
+			"lead_author", this.isLeadAuthor);
 	}
 
 	/**
@@ -70,4 +73,11 @@ public class BookAuthor extends DirectlyUpdatableDatabaseObject<BookAuthor> {
 		this.authorId = authorId;
 	}
 
+	public void setLeadAuthor(Boolean isLeadAuthor) {
+		this.isLeadAuthor = isLeadAuthor;
+	}
+
+	public Boolean isLeadAuthor() {
+		return this.isLeadAuthor;
+	}
 }
