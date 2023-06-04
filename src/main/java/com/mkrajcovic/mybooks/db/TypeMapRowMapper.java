@@ -22,10 +22,20 @@ public class TypeMapRowMapper implements RowMapper<TypeMap> {
 		int columnCount = rsMeta.getColumnCount();
 		TypeMap mapOfColumnValues = new TypeMap();
 		for (int i = 1; i <= columnCount; i++) {
-			Object value = rs.getObject(i);
 			String name = translator.removeColumnPrefix(rsMeta.getColumnName(i));
-			mapOfColumnValues.put(name, value);
+			Object value = rs.getObject(i);
+			mapOfColumnValues.put(name, resolveDateTimeValueType(value));
 		}
 		return mapOfColumnValues;
+	}
+
+	private Object resolveDateTimeValueType(Object value) {
+		if (value instanceof java.sql.Timestamp) {
+			return ((java.sql.Timestamp) value).toLocalDateTime();
+		} else if (value instanceof java.sql.Date) {
+			return ((java.sql.Date) value).toLocalDate();
+		} else {
+			return value;
+		}
 	}
 }

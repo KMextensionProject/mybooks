@@ -11,6 +11,7 @@ public enum QueryOperator {
 	NOT_LIKE(" NOT LIKE '%"),
 	IS_NULL(" IS NULL"),
 	IS_NOT_NULL(" IS NOT NULL");
+	// TODO: add between?
 
 	private String operatorValue;
 

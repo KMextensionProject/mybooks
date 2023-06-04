@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 
 /**
  * Updates and soft deletes are performed on the single database table directly.
- * Delete performs invalidation of records by updating the d_to property.
- * Update causes executing direct update statement on the row.
+ * Delete performs invalidation of records by updating rowValidityEndDateColumn 
+ * property. Update causes executing direct update statement on the database row.
  *
  * @author martin
  */
@@ -14,9 +14,9 @@ public abstract class DirectlyUpdatableDatabaseObject<T> extends DatabaseObject<
 
 	/**
 	 * Performs update operation on underlying record in database with no record
-	 * duplication as used for storing history records.<br>
-	 * Although the value as specified by rowValidityStartDateColumn is reset to
-	 * the moment 
+	 * duplication like it is usually used for storing history records.<br>
+	 * Although the value as specified by rowValidityStartDateColumn is updated
+	 * to {@code LocalDateTime.now()} value.
 	 */
 	@Override
 	public void update() {
@@ -43,7 +43,8 @@ public abstract class DirectlyUpdatableDatabaseObject<T> extends DatabaseObject<
 	}
 
 	/**
-	 * Permanently deletes the record by id of the object from database.
+	 * Permanently deletes the record from database by the identifier 
+	 * value of the underlying object.
 	 */
 	public void hardDelete() {
 		Integer id = getAsDbRow().getInteger(identifier);

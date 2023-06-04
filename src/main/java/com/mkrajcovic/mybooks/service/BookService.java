@@ -39,7 +39,10 @@ public class BookService {
 			.join("library_enum.e_binding_type B").on("A.n_binding_type_id", "B.n_binding_type_id")
 			.join("library_enum.e_format C").on("A.n_format_id", "C.n_format_id")
 			.join("library_enum.e_language D").on("A.n_language_id", "D.n_language_id")
+
 			// join and select these authors separately
+			// when I figure out how to display that list
+			// of authors as a dropdown list in one row
 			.join("library.t_book_author BA").on("A.n_book_id", "BA.n_book_id")
 			.join("library.t_author E").on("BA.n_author_id", "E.n_author_id")
 			.where("BA.b_lead_author")
@@ -93,6 +96,6 @@ public class BookService {
 			.update();
 
 		// could it be meaningful to update book / author relationship?
-		// zmena autora napr.
+		// change author?
 	}
 }

@@ -12,6 +12,12 @@ public class ColumnTranslator {
 
 	private static final LocalDateTime INFINITY = LocalDateTime.parse("+292278994-08-17T00:00");
 
+	/**
+	 *
+	 * @param field
+	 * @param value
+	 * @return
+	 */
 	// this would be great to have mapped from database
 	public String toColumnName(String field, Object value) {
 		if (value instanceof CharSequence) {
@@ -39,6 +45,11 @@ public class ColumnTranslator {
 		return columnName.substring(colNameStartIndex);
 	}
 
+	/**
+	 *
+	 * @param data
+	 * @return
+	 */
 	public TypeMap toColumnNames(TypeMap data) {
 		return data.entrySet()
 			.stream()
