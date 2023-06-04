@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import com.mkrajcovic.mybooks.db.DirectlyUpdatableDatabaseObject;
 import com.mkrajcovic.mybooks.db.TypeMap;
 
+// pridat ku knihe obrazok?
+// pridat ku knihe obsah? / citatelsky dennik?
 public class Book extends DirectlyUpdatableDatabaseObject<Book> {
 
 	private Integer bookId;

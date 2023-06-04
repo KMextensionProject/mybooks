@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mkrajcovic.mybooks.dao.Author;
 import com.mkrajcovic.mybooks.db.Database;
@@ -13,15 +14,9 @@ import com.mkrajcovic.mybooks.db.TypeMap;
 public class AuthorService {
 
 	@Autowired
-	private Database database;
+	private Database db;
 
-	// incorporate searching
-	public List<TypeMap> listAuthors() {
-		return database.select()
-			.from("library.t_author")
-			.asList();
-	}
-
+	@Transactional
 	public Integer createAuthor(TypeMap authorMap) {
 		Author author = new Author();
 		author.setByData(authorMap);
@@ -30,4 +25,28 @@ public class AuthorService {
 		return author.getAuthorId();
 	}
 
+	// incorporate searching
+	public List<TypeMap> listAuthors() {
+		return db.select()
+			.from("library.t_author")
+			.asList();
+	}
+
+	public TypeMap getAuthor(Integer id) {
+		return db.select()
+			.from("library.t_author")
+			.where("n_author_id", id)
+			.asMap();
+	}
+
+	@Transactional
+	public void deleteAuthor(Integer id) {
+		Author author = new Author();
+		author.setAuthorId(id);
+		author.delete();
+
+		// delete relationship with book for that author id
+		// this is done automatically by database, because of
+		// ON DELETE CASCADE setting on the FK
+	}
 }

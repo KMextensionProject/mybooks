@@ -1,5 +1,7 @@
 package com.mkrajcovic.mybooks.controller;
 
+import static com.mkrajcovic.mybooks.enums.ContentType.APPLICATION_JSON;
+
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,7 @@ public class BookController {
 	@Autowired
 	private BookService bookService;
 
-	@GetMapping(path = "/ping", produces = "application/json")
+	@GetMapping(path = "/ping", produces = APPLICATION_JSON)
 	@ResponseBody
 	public Map<String, String> ping() {
 		return bookService.ping();
@@ -47,32 +49,32 @@ public class BookController {
 		return "bookGrid";
 	}
 
-	@PostMapping(path = "book", consumes = "application/json")
+	@PostMapping(path = "/book", consumes = APPLICATION_JSON)
 	@PreAuthorize("hasRole('USER')")
-	@ResponseBody
 	public ResponseEntity<Object> createBook(@RequestBody TypeMap bookData) {
 		Integer id = bookService.createBook(bookData);
 		return ResponseEntity.created(URI.create("/book/" + id)).build();
 	}
 
-	@GetMapping(path = "/book/", produces = "application/json")
+	@GetMapping(path = "/book/", produces = APPLICATION_JSON)
 	@PreAuthorize("hasRole('USER')")
 	@ResponseBody
 	public List<TypeMap> listBooks() {
 		return bookService.getBooks();
 	}
 
-	@GetMapping(path = "/book/{id}", produces = "application/json")
+	@GetMapping(path = "/book/{id}", produces = APPLICATION_JSON)
 	@PreAuthorize("hasRole('USER')")
 	@ResponseBody
 	public TypeMap getBook(@PathVariable("id") Integer id) {
 		return bookService.getBook(id);
 	}
 
-	@PostMapping(path = "/book/{id}", consumes = "application/json") // PUT?
+	@PostMapping(path = "/book/{id}", consumes = APPLICATION_JSON)
 	@PreAuthorize("hasRole('ADMIN')")
-	public void updateBook(@PathVariable Integer id, @RequestBody TypeMap book) {
+	public ResponseEntity<Object> updateBook(@PathVariable Integer id, @RequestBody TypeMap book) {
 		bookService.updateBook(id, book);
+		return ResponseEntity.ok().build();
 	}
 
 	@DeleteMapping(path = "/book/{id}")

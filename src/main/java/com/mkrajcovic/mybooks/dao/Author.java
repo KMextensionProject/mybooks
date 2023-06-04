@@ -11,7 +11,7 @@ public class Author extends DirectlyUpdatableDatabaseObject<Author> {
 	@Override
 	protected void initTableMetadata() {
 		sourceTable = "library.t_author";
-		sourceView = "library.v_author";
+//		sourceView = "library.v_author";
 		identifier = "n_author_id";
 	}
 
@@ -48,8 +48,16 @@ public class Author extends DirectlyUpdatableDatabaseObject<Author> {
 	@Override
 	public TypeMap toTypeMap() {
 		return new TypeMap(
-			"book_id", authorId,
-			"isbn", authorName);
+			"author_id", authorId,
+			"author_name", authorName);
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public void delete() {
+		hardDelete();
 	}
 
 	@Override

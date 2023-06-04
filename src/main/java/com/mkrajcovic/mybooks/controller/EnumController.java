@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import static com.mkrajcovic.mybooks.enums.ContentType.APPLICATION_JSON;
 
 import com.mkrajcovic.mybooks.db.TypeMap;
 import com.mkrajcovic.mybooks.service.EnumService;
@@ -21,25 +22,25 @@ public class EnumController {
 	@Autowired
 	private EnumService enumService;
 
-	@GetMapping(path = "/bindingType/", produces = "application/json")
+	@GetMapping(path = "/bindingType/", produces = APPLICATION_JSON)
 	@ResponseBody
 	public List<TypeMap> getBindingTypes() {
 		return enumService.getBindingTypes();
 	}
 
-	@GetMapping(path = "/format/", produces = "application/json")
+	@GetMapping(path = "/format/", produces = APPLICATION_JSON)
 	@ResponseBody
 	public List<TypeMap> getFormats() {
 		return enumService.getFormats();
 	}
 
-	@GetMapping(path = "/language/", produces = "application/json")
+	@GetMapping(path = "/language/", produces = APPLICATION_JSON)
 	@ResponseBody
 	public List<TypeMap> getLanguages() {
 		return enumService.getLanguages();
 	}
 
-	@PostMapping(path = "/drop")
+	@PostMapping(path = "/dropCache")
 	@ResponseStatus(HttpStatus.OK)
 	public void dropEnumCache() {
 		enumService.dropCache();

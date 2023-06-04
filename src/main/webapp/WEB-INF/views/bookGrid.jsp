@@ -5,12 +5,9 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
-
 <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
 <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
 
-<link type="text/css" rel="stylesheet" href="jsgrid.min.css" />
-<link type="text/css" rel="stylesheet" href="jsgrid-theme.min.css" />
 <!-- <script type="text/javascript" src="jsgrid.min.js"></script> -->
 
  <div id="jsGrid"></div>
@@ -19,6 +16,7 @@
 $("#jsGrid").jsGrid({
     width: "100%",
     height: "auto",
+    inserting: false, // use other screen
     filtering: true,
     editing: false,
     sorting: true,
@@ -35,7 +33,6 @@ $("#jsGrid").jsGrid({
         controller: {
             loadData: function() {
                 var d = $.Deferred();
- 
                 $.ajax({
                     // CORS policy enable on local server for now
                     url: "http://localhost:8080/mybooks/book/",
@@ -45,6 +42,22 @@ $("#jsGrid").jsGrid({
                 });
  
                 return d.promise();
+            },
+            updateItem: function(item) {
+            	var itemJson = JSON.stringify(item);
+                return $.ajax({
+                    type: "POST",
+                    url: "http://localhost:8080/mybooks/book/" + item.book_id,
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: itemJson
+                });
+            },
+            deleteItem: function(item) {
+                return $.ajax({
+                    type: "DELETE",
+                    url: "http://localhost:8080/mybooks/book/" + item.book_id,
+                });
             }
         },
 
@@ -99,9 +112,14 @@ $("#jsGrid").jsGrid({
         type: "text",
         width: 18
     }, {
-        type: "control" 
+        type: "control",
+        _createFilterSwitchButton: function() {
+		    return this._createOnOffSwitchButton("filtering", this.searchModeButtonClass, false);
+		}
     }]
 });
+// hide search row after grid creation
+$("#jsGrid").jsGrid("option", "filtering", false);
 </script>
 
 </body>

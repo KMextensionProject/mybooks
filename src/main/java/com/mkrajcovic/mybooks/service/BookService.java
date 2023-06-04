@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mkrajcovic.mybooks.dao.Book;
+import com.mkrajcovic.mybooks.dao.BookAuthor;
 import com.mkrajcovic.mybooks.db.Database;
 import com.mkrajcovic.mybooks.db.TypeMap;
 
@@ -41,6 +42,7 @@ public class BookService {
 			// join and select these authors separately
 			.join("library.t_book_author BA").on("A.n_book_id", "BA.n_book_id")
 			.join("library.t_author E").on("BA.n_author_id", "E.n_author_id")
+			.where("BA.b_lead_author")
 			.where("A.d_to", "infinity")
 			.asList();
 	}
@@ -58,14 +60,15 @@ public class BookService {
 		newBook.setByData(book);
 		newBook.insert();
 
-		// v datach mi dojdu aj autori.. takze si ich poselektujem
+		// v datach mi dojdu aj id autorov.. takze si ich poselektujem
 		// ak nebudu existovat, tak ich nezakladam, ale hodim validacny error
 		// TODO: vystavit input schemu
 
 		// cross tabulka nebude mat tuto knihu este, takze netreba overovat...
 		// staci insertnut do nej..
 
-		// author will be created beforehand from within its own form
+		// autor by mal byt vytvoreny na zvlast screene pred tym, nez sa bude dat
+		// vybrat na knihu
 
 		return newBook.getBookId();
 	}
@@ -76,9 +79,11 @@ public class BookService {
 		book.setBookId(id);
 		book.delete();
 
-		// delete all autho-book relationship ?
-		// knihu uz mozno nechcem, alebo ju nemam ale ta kniha patri stale pod toho autora...
-		// nemusim to mazat, staci, ze ta kniha bude nevalidna.
+		// soft delete is performed on Book, so we must explicitly
+		// delete the relationship between book and its authors
+		BookAuthor bookAuthor = new BookAuthor();
+		bookAuthor.setBookId(id);
+		bookAuthor.delete();
 	}
 
 	@Transactional

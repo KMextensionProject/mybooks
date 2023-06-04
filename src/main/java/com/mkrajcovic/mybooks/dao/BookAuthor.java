@@ -1,46 +1,73 @@
 package com.mkrajcovic.mybooks.dao;
 
-import com.mkrajcovic.mybooks.db.DatabaseObject;
+import com.mkrajcovic.mybooks.db.DirectlyUpdatableDatabaseObject;
 import com.mkrajcovic.mybooks.db.TypeMap;
 
-public class BookAuthor extends DatabaseObject<BookAuthor> {
+public class BookAuthor extends DirectlyUpdatableDatabaseObject<BookAuthor> {
 
 	private Integer bookId;
 	private Integer authorId;
 
 	@Override
 	protected void initTableMetadata() {
-		identifier = ""; // toto moze poukazovat na knihu a zmaze vsetky zaznamy s knihami v kross tabulke
+		identifier = "n_book_id";
 		sourceTable = "library.t_book_author";
 //		sourceView = "library.v_book_author";
 	}
 
 	@Override
-	protected BookAuthor setByData(TypeMap data) {
-		return null;
+	public BookAuthor setByData(TypeMap data) {
+		if (data == null || data.isEmpty()) {
+			return this;
+		}
+		TypeMap map = toTypeMap();
+		map.putAll(data);
+
+		bookId = map.getInteger("book_id");
+		authorId = map.getInteger("author_id");
+
+		return this;
 	}
 
 	@Override
-	protected TypeMap toTypeMap() {
-		return null;
+	public TypeMap toTypeMap() {
+		return new TypeMap(
+			"book_id", this.bookId,
+			"author_id", this.authorId);
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
-	protected void update() {
-		// do nothing
-		
+	public void update() {
+		LOG.warning(() -> "updating cross table has no effect, you must "
+			+ "recreate this relationship by deleting it first");
+		// throw error (bad request) with above message
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Override
-	protected void delete() {
-		// by book id when the book is deleted
-		// if we were deleting books by hard delete, then this would be cascaded to bookauthor table by database.
+	public void delete() {
+		this.hardDelete();
+	}
+
+	public Integer getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
+	}
+
+	public Integer getAuthorId() {
+		return authorId;
+	}
+
+	public void setAuthorId(Integer authorId) {
+		this.authorId = authorId;
 	}
 
 }

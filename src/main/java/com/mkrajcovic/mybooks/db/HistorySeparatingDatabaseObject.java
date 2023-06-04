@@ -1,5 +1,6 @@
 package com.mkrajcovic.mybooks.db;
 
+// TODO: this will be used on Book model, since we want to maintain the history for these objects.. maybe
 public abstract class HistorySeparatingDatabaseObject<T> extends DatabaseObject<T> {
 
 	// if history table will be null, then throw error

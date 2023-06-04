@@ -49,7 +49,7 @@ public abstract class DirectlyUpdatableDatabaseObject<T> extends DatabaseObject<
 		Integer id = getAsDbRow().getInteger(identifier);
 		String deleteStatement = new StringBuilder("DELETE FROM ")
 			.append(sourceTable)
-			.append("WHERE ")
+			.append(" WHERE ")
 			.append(identifier)
 			.append(" = ")
 			.append(id).toString();

@@ -1,5 +1,9 @@
 package com.mkrajcovic.mybooks.service;
 
+import static com.mkrajcovic.mybooks.enums.CacheNames.BINDING;
+import static com.mkrajcovic.mybooks.enums.CacheNames.FORMAT;
+import static com.mkrajcovic.mybooks.enums.CacheNames.LANGUAGE;
+
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,9 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.mkrajcovic.mybooks.db.Database;
 import com.mkrajcovic.mybooks.db.TypeMap;
-import static com.mkrajcovic.mybooks.utils.CacheNames.BINDING;
-import static com.mkrajcovic.mybooks.utils.CacheNames.FORMAT;
-import static com.mkrajcovic.mybooks.utils.CacheNames.LANGUAGE;
 
 @Service
 public class EnumService {
@@ -20,13 +21,13 @@ public class EnumService {
 	private static final Logger LOG = Logger.getAnonymousLogger();
 
 	@Autowired
-	private Database database;
+	private Database db;
 
 	// TODO: use views where data are restricted by d_to
 
 	@Cacheable(cacheNames = BINDING, sync = true)
 	public List<TypeMap> getBindingTypes() {
-		return database.select(
+		return db.select(
 				"n_binding_type_id", 
 				"s_name")
 			.from("library_enum.e_binding_type")
@@ -35,7 +36,7 @@ public class EnumService {
 
 	@Cacheable(cacheNames = FORMAT, sync = true)
 	public List<TypeMap> getFormats() {
-		return database.select(
+		return db.select(
 				"n_format_id",
 				"s_code",
 				"s_dimensions")
@@ -45,7 +46,7 @@ public class EnumService {
 
 	@Cacheable(cacheNames = LANGUAGE, sync = true)
 	public List<TypeMap> getLanguages() {
-		return database.select(
+		return db.select(
 				"n_language_id",
 				"s_code",
 				"s_name")

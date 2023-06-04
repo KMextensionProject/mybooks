@@ -1,4 +1,4 @@
-package com.mkrajcovic.mybooks.utils;
+package com.mkrajcovic.mybooks.enums;
 
 public class CacheNames {
 
