@@ -113,7 +113,7 @@ public abstract class DatabaseObject<T> {
 		// https://stackoverflow.com/questions/201887/primary-key-from-inserted-row-jdbc
 		try {
 			PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
-					.prepareStatement(insertStatement);
+					.prepareStatement(insertStatement); // TODO: toto vymenit za springovy prepared statement cez jdbctemplate
 			preparedStatement.executeUpdate(insertStatement, Statement.RETURN_GENERATED_KEYS);
 
 			ResultSet result = preparedStatement.getGeneratedKeys();
@@ -128,6 +128,7 @@ public abstract class DatabaseObject<T> {
 		}
 	}
 
+	// TODO: ked jdbc template robi prepaared statementy automaticky, tak mu treba davat explicitne argumenty a to query nech ma otazniky
 	private String buildInsertStatement() {
 		TypeMap data = getAsDbRow();
 		data.remove(identifier); // PK assigned by DB
