@@ -2,6 +2,7 @@ package com.mkrajcovic.mybooks.db;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 /**
  * Updates and soft deletes are performed on the single database table directly.
@@ -25,6 +26,16 @@ public abstract class DirectlyUpdatableDatabaseObject<T> extends DatabaseObject<
 		String updateStatement = buildUpdateStatement(data);
 		LOG.info(updateStatement);
 		jdbcTemplate.update(updateStatement);
+	}
+
+	public void preparedUpdate() {
+		TypeMap data = getAsDbRow();
+		data.put(rowValidityStartDateColumn, Timestamp.valueOf(LocalDateTime.now()));
+		data.remove(rowValidityEndDateColumn);
+		String updatePreparedStatement = buildUpdatePreparedStatement(data);
+		Collection<Object> values = data.values();
+		LOG.info("execute:" + updatePreparedStatement + " with values " + values);
+		jdbcTemplate.update(updatePreparedStatement, values.toArray());
 	}
 
 	/**

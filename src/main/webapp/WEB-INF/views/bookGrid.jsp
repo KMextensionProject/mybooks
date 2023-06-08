@@ -18,7 +18,7 @@ $("#jsGrid").jsGrid({
     height: "auto",
     inserting: false, // use other screen
     filtering: true,
-    editing: false,
+    editing: true,
     sorting: true,
     paging: true,
 

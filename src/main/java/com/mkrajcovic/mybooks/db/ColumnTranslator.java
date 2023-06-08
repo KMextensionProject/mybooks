@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+import org.postgresql.PGStatement;
+
 public class ColumnTranslator {
 
 	private static final LocalDateTime INFINITY = LocalDateTime.parse("+292278994-08-17T00:00");

@@ -7,11 +7,13 @@ import java.util.UUID;
 
 import org.springframework.util.LinkedCaseInsensitiveMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Convertible map which provides convenient methods for getting value in
  * desired type if possible
  */
-//@JsonIgnoreProperties({"from", "to", "valid"})
+@JsonIgnoreProperties({"from", "to", "valid"}) // TODO: toto normalne preklapat cez custom object mapper
 public class TypeMap extends LinkedCaseInsensitiveMap<Object> {
 
 	private static final long serialVersionUID = -2690058775910305972L;

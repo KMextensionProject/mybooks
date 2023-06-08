@@ -93,7 +93,7 @@ public class BookService {
 	public void updateBook(Integer id, TypeMap book) {
 		new Book().selectByIdWithCheckExistence(id)
 			.setByData(book)
-			.update();
+			.preparedUpdate();
 
 		// could it be meaningful to update book / author relationship?
 		// change author?
