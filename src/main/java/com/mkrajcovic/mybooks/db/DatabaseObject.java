@@ -169,52 +169,19 @@ public abstract class DatabaseObject<T> {
 	}
 
 	protected String buildUpdateStatement(TypeMap data) {
-		Integer id = data.getInteger(identifier);
-		data.remove(identifier);
-
-		StringBuilder update = new StringBuilder("UPDATE ");
-		update.append(sourceTable)
-			  .append(" SET ");
-
-		for (Map.Entry<String, Object> entry : data.entrySet()) {
-			update.append(entry.getKey())
-				  .append(" = ");
-
-			Object value = entry.getValue();
-			if (value instanceof CharSequence) {
-				update.append("'")
-					  .append(value)
-					  .append("'");
-			} else {
-				update.append(value);
-			}
-			update.append(", ");
-		}
-		update.deleteCharAt(update.length() - 2)
-			  .append(" WHERE ")
-			  .append(identifier)
-			  .append(" = ")
-			  .append(id);
-
-		return update.toString();
-	}
-
-	protected String buildUpdatePreparedStatement(TypeMap data) {
-		// move the identifier at last position
-		Integer id = (Integer) data.remove(identifier);
-		data.put(identifier, id);
-
 		StringBuilder ups = new StringBuilder("UPDATE ")
 			.append(sourceTable)
 			.append(" SET ");
 
+		// skip updating identifier
+		Integer id = (Integer) data.remove(identifier);
 		for (Map.Entry<String, Object> entry : data.entrySet()) {
-			// skip updating the identifier
-			if (!identifier.equals(entry.getKey())) {
-				ups.append(entry.getKey())
-				   .append(" = ?, ");
-			}
+			ups.append(entry.getKey())
+			   .append(" = ?, ");
 		}
+		// put identifier back at the last position
+		data.put(identifier, id);
+
 		ups.deleteCharAt(ups.length() - 2)
 		  .append(" WHERE ")
 		  .append(identifier)
