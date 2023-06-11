@@ -52,9 +52,9 @@ public class Database {
 		return new Select(jdbcTemplate, typeMapRowMapper, databaseVendor, columns);
 	}
 
-	public Call call(String procedure) {
-		return new Call(procedure);
-	}
+//	public Call call(String procedure) {
+//		return new Call(procedure);
+//	}
 
 	@Override
 	public String toString() {
