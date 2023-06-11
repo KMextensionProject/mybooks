@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -108,17 +109,29 @@ public abstract class DatabaseObject<T> {
 	 * this object.
 	 */
 	public void insert() {
-		String insertStatement = buildInsertStatement();
-		LOG.info(insertStatement);
-		// https://stackoverflow.com/questions/201887/primary-key-from-inserted-row-jdbc
+		TypeMap data = getAsDbRow();
+		data.remove(identifier); // PK assigned by DB
+
+		String insertStatement = buildInsertStatement(data);
+		Object[] values = data.values().toArray();
+		LOG.info("execute: " + insertStatement + " with values " + Arrays.toString(values));
+
+		// Spring provides the SimpleJdbcInsert object that could be used for this, 
+		// or jdbcTemplate.update(PreparedStatementCreator, GeneratedKeyHolder) but
+		// then I would need to add a callback for column name translations..
+		// so I do it right here instead by JDBC API
 		try {
 			PreparedStatement preparedStatement = jdbcTemplate.getDataSource().getConnection()
-					.prepareStatement(insertStatement); // TODO: toto vymenit za springovy prepared statement cez jdbctemplate
-			preparedStatement.executeUpdate(insertStatement, Statement.RETURN_GENERATED_KEYS);
+					.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
+
+			for (int i = 1; i <= values.length; i++) {
+				preparedStatement.setObject(i, values[i - 1]);
+			}
+			preparedStatement.executeUpdate();
 
 			ResultSet result = preparedStatement.getGeneratedKeys();
 			if (result.next()) {
-				TypeMap data = toTypeMap();
+				data = toTypeMap();
 				// add new ID to model after insert
 				data.put(columnTranslator.removeColumnPrefix(identifier), result.getInt(1));
 				setByData(data);
@@ -128,11 +141,7 @@ public abstract class DatabaseObject<T> {
 		}
 	}
 
-	// TODO: ked jdbc template robi prepaared statementy automaticky, tak mu treba davat explicitne argumenty a to query nech ma otazniky
-	private String buildInsertStatement() {
-		TypeMap data = getAsDbRow();
-		data.remove(identifier); // PK assigned by DB
-
+	protected String buildInsertStatement(TypeMap data) {
 		StringBuilder insert = new StringBuilder();
 		insert.append("INSERT INTO ");
 		insert.append(sourceTable);
@@ -141,31 +150,17 @@ public abstract class DatabaseObject<T> {
 		StringBuilder values  = new StringBuilder(" VALUES (");
 
 		for (Map.Entry<String, Object> entry : data.entrySet()) {
-			columns.append(entry.getKey());
-			columns.append(",");
+			columns.append(entry.getKey())
+				   .append(",");
 
-			Object value = entry.getValue();
-			// TODO: centralize this transformation
-			if (value instanceof CharSequence) {
-				value = value.toString()
-					.replace('\n', ' ')
-//					.replace("'", "\'")
-					.replace('"', '\"'); // regex?!
-
-				value = "'" + value + "'";
-			}
-			values.append(value);
-			values.append(",");
+			values.append("?,");
 		}
-		columns.deleteCharAt(columns.length() - 1);
-		columns.append(")");
-
-		values.deleteCharAt(values.length() - 1);
-		values.append(")");
+		columns.deleteCharAt(columns.length() - 1).append(")");
+		values.deleteCharAt(values.length() - 1).append(")");
 
 		return insert.append(columns)
-				.append(values)
-				.toString();
+			.append(values)
+			.toString();
 	}
 
 	protected String buildUpdateStatement(TypeMap data) {
@@ -180,6 +175,7 @@ public abstract class DatabaseObject<T> {
 			   .append(" = ?, ");
 		}
 		// put identifier back at the last position
+		// for use in the WHERE clause below
 		data.put(identifier, id);
 
 		ups.deleteCharAt(ups.length() - 2)
