@@ -16,7 +16,7 @@
 $("#jsGrid").jsGrid({
     width: "100%",
     height: "auto",
-    inserting: false, // use other screen
+    inserting: false, // use other screen ?
     filtering: true,
     editing: true,
     sorting: true,
@@ -24,9 +24,9 @@ $("#jsGrid").jsGrid({
 
     //for loadData method Need to set auto load true
     autoload: true,
-    pageSize: 15,
-    pageButtonCount: 5,
-    deleteConfirm: "Do you really want to delete the client?",
+    pageSize: 20,
+    pageButtonCount: 3,
+    deleteConfirm: "Do you really want to delete this book?",
 
     noDataContent: "Directory is empty",
 
@@ -61,11 +61,14 @@ $("#jsGrid").jsGrid({
             }
         },
 
+    // ids for labels should be returned
+
     fields: [{
     	name: "book_id",
     	type: "text",
     	width: 15,
-    	visible: false
+    	visible: false,
+    	editing: false
     }, {
         name: "isbn",
         title: 'ISBN',
@@ -80,18 +83,19 @@ $("#jsGrid").jsGrid({
         name: "author_name",
         title: 'Leading author',
         type: "text",
-        width: 50
+        width: 50,
+        editing: false
     }, {
         name: "pages",
         title: 'Pages',
         type: "text",
         width: 30
-    }, {
+    }, { // TODO: make as option/select column for update
         name: "binding_type_label",
         title: 'Binding',
         type: "text",
         width: 25
-    }, {
+    }, { // TODO: make as option/select column for update
         name: "format_label",
         title: 'Format',
         type: "text",
@@ -101,7 +105,7 @@ $("#jsGrid").jsGrid({
     	title: "Publisher",
     	type: "text",
     	width: 60
-	}, {
+	}, { // TODO: make as option/select column for update
         name: "language_code",
         title: "Language",
         type: "text",

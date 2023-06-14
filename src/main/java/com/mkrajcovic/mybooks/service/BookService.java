@@ -90,11 +90,14 @@ public class BookService {
 	}
 
 	@Transactional
-	public void updateBook(Integer id, TypeMap book) {
-		new Book().selectByIdWithCheckExistence(id)
-			.setByData(book)
-			.update();
+	public TypeMap updateBook(Integer id, TypeMap bookData) {
+		Book book = new Book()
+			.selectByIdWithCheckExistence(id)
+			.setByData(bookData);
 
+		book.update();
+
+		return bookData;
 		// could it be meaningful to update book / author relationship?
 		// change author?
 	}

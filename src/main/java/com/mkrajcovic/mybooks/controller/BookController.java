@@ -70,11 +70,17 @@ public class BookController {
 		return bookService.getBook(id);
 	}
 
+	/**
+	 *
+	 * @param id
+	 * @param book
+	 * @return updated book for jsGrid, because it needs to refresh the updated row
+	 */
 	@PostMapping(path = "/book/{id}", consumes = APPLICATION_JSON)
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Object> updateBook(@PathVariable Integer id, @RequestBody TypeMap book) {
-		bookService.updateBook(id, book);
-		return ResponseEntity.ok().build();
+	@ResponseBody
+	public TypeMap updateBook(@PathVariable Integer id, @RequestBody TypeMap book) {
+		return bookService.updateBook(id, book);
 	}
 
 	@DeleteMapping(path = "/book/{id}")
