@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Database {
 
-	private static final Logger LOGGER = Logger.getAnonymousLogger();
+	private static final Logger LOG = Logger.getAnonymousLogger();
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -21,35 +21,31 @@ public class Database {
 	@Autowired
 	private TypeMapRowMapper typeMapRowMapper;
 
-	// rename to metadata + cache
-	private DatabaseVendor databaseVendor;
 	private boolean autoCommitOn;
+	private String databaseName;
 
 	@PostConstruct
 	private void init() {
 		try (Connection con = jdbcTemplate.getDataSource().getConnection()) {
+			databaseName = con.getMetaData().getDatabaseProductName();
 			autoCommitOn = con.getAutoCommit();
-			databaseVendor = DatabaseVendor.getByName(con.getMetaData().getDatabaseProductName());
-			if (DatabaseVendor.UNKNOWN.equals(databaseVendor)) {
-				LOGGER.severe("Unknown database Vendor " + databaseVendor + " - select API may not work properly");
-			}
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
 		}
 
-		LOGGER.info(toString());
+		LOG.info(toString());
 	}
 
 	public boolean isAutoCommitOn() {
 		return this.autoCommitOn;
 	}
 
-	public DatabaseVendor getDatabaseVendor() {
-		return this.databaseVendor;
+	public String getDatabaseName() {
+		return this.databaseName;
 	}
 
 	public Select select(String... columns) {
-		return new Select(jdbcTemplate, typeMapRowMapper, databaseVendor, columns);
+		return new Select(jdbcTemplate, typeMapRowMapper, columns);
 	}
 
 //	public Call call(String procedure) {
@@ -58,6 +54,6 @@ public class Database {
 
 	@Override
 	public String toString() {
-		return "Database [databaseVendor=" + databaseVendor + ", autoCommitOn=" + autoCommitOn + "]";
+		return "Database [dbName="+ databaseName +", autoCommitOn=" + autoCommitOn + "]";
 	}
 }

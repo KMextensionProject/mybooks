@@ -31,9 +31,8 @@ public final class Select {
 	private Set<OrderBy> orderByColumns;
 	private RowMapper<TypeMap> cMapRowMapper;
 	private ColumnTranslator fieldTranslator;
-	private DatabaseVendor databaseVendor;
 
-	Select(JdbcTemplate jdbcTemplate, RowMapper<TypeMap> rowMapper, DatabaseVendor vendor, String... columns) {
+	Select(JdbcTemplate jdbcTemplate, RowMapper<TypeMap> rowMapper, String... columns) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.selectBuilder = new StringBuilder("SELECT ");
 		this.whereBuilder = new StringBuilder();
@@ -41,7 +40,6 @@ public final class Select {
 		this.cMapRowMapper = rowMapper;
 		this.orderByColumns = new LinkedHashSet<>();
 		this.fieldTranslator = new ColumnTranslator();
-		this.databaseVendor = vendor;
 		select(columns);
 	}
 
@@ -398,20 +396,9 @@ public final class Select {
 	}
 
 	private void appendLimit() {
-		switch(databaseVendor) {
-		case ORACLE:
-			selectBuilder.append(" FETCH FIRST ")
-						 .append(limit)
-						 .append(" ROWS ONLY");
-			break;
-		case POSTGRES:
-		case MYSQL:
-			selectBuilder.append(" LIMIT ")
-						 .append(limit);
-			break;
-		default :
-			return;
-		}
+		selectBuilder.append(" FETCH FIRST ")
+					 .append(limit)
+					 .append(" ROWS ONLY");
 	}
 
 	private <T> T queryForObject(Class<T> classObj) {
