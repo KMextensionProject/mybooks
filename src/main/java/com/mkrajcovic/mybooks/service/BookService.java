@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mkrajcovic.mybooks.dao.Book;
 import com.mkrajcovic.mybooks.dao.BookAuthor;
 import com.mkrajcovic.mybooks.db.Database;
+import com.mkrajcovic.mybooks.db.QueryParams;
 import com.mkrajcovic.mybooks.db.TypeMap;
 
 @Service
@@ -28,8 +29,7 @@ public class BookService {
 		return "home";
 	}
 
-	// listovacka + searchovacka potom
-	public List<TypeMap> getBooks() { // add paging through http request headers
+	public List<TypeMap> getBooks(QueryParams queryParams) { // add paging through http request headers
 		return db.select("A.*", 
 				"B.s_name AS s_binding_type_label",
 				"C.s_dimensions AS s_format_label",
@@ -47,6 +47,7 @@ public class BookService {
 			.join("library.t_author E").on("BA.n_author_id", "E.n_author_id")
 			.where("BA.b_lead_author")
 			.where("A.d_to", "infinity")
+			.where(queryParams)
 			.asList();
 	}
 

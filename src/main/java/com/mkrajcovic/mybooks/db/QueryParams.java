@@ -19,8 +19,13 @@ public class QueryParams {
 		return params.keySet();
 	}
 
+	/**
+	 * NULL keys or values will not be inserted
+	 */
 	public void addParam(String name, Object value) {
-		params.put(name, value);
+		if (name != null && value != null) {
+			params.put(name, value);
+		}
 	}
 
 	public Object removeParam(String name) {
@@ -46,5 +51,10 @@ public class QueryParams {
 	public void renameParam (String oldParamName, String newParamName) {
 		Object value = this.params.remove(oldParamName);
 		params.put(newParamName, value);
+	}
+
+	@Override
+	public String toString() {
+		return this.params.toString();
 	}
 }

@@ -19,12 +19,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableCaching
-@EnableWebMvc
 @EnableTransactionManagement
 @PropertySource("classpath:db/connection.properties")
 @ComponentScan("com.mkrajcovic.mybooks")
@@ -84,13 +81,5 @@ public class RootConfig {
 				new ConcurrentMapCache("language")));
 
 		return cacheManager;
-	}
-
-	@Bean
-	public InternalResourceViewResolver getViewResolver() {
-		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-		viewResolver.setPrefix("/WEB-INF/views/");
-		viewResolver.setSuffix(".jsp");
-		return viewResolver;
 	}
 }

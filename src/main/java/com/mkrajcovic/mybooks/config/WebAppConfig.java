@@ -8,6 +8,7 @@ public class WebAppConfig extends AbstractAnnotationConfigDispatcherServletIniti
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class<?>[] {
 			RootConfig.class,
+			WebMvcCustomConfig.class,
 			SecurityConfig.class
 		};
 	}

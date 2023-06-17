@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.mkrajcovic.mybooks.db.QueryParams;
 import com.mkrajcovic.mybooks.db.TypeMap;
 import com.mkrajcovic.mybooks.service.BookService;
 
@@ -59,8 +60,8 @@ public class BookController {
 	@GetMapping(path = "/book/", produces = APPLICATION_JSON)
 	@PreAuthorize("hasRole('USER')")
 	@ResponseBody
-	public List<TypeMap> listBooks() {
-		return bookService.getBooks();
+	public List<TypeMap> listBooks(QueryParams queryParams) {
+		return bookService.getBooks(queryParams);
 	}
 
 	@GetMapping(path = "/book/{id}", produces = APPLICATION_JSON)
