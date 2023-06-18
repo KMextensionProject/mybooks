@@ -1,5 +1,7 @@
 package com.mkrajcovic.mybooks.db;
 
+import static com.mkrajcovic.mybooks.db.AccessibleContext.getBean;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,12 +11,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.Assert;
 
-@Configurable
 public abstract class DatabaseObject<T> {
 
 	protected static final Logger LOG = Logger.getAnonymousLogger();
@@ -25,15 +24,14 @@ public abstract class DatabaseObject<T> {
 	protected String rowValidityStartDateColumn;
 	protected String rowValidityEndDateColumn;
 
-	@Autowired
-	protected Database database;
-
-	@Autowired
-	protected JdbcTemplate jdbcTemplate;
+	protected final Database database;
+	protected final JdbcTemplate jdbcTemplate;
 
 	private ColumnTranslator columnTranslator;
 
 	protected DatabaseObject() {
+		database = getBean(Database.class);
+		jdbcTemplate = getBean(JdbcTemplate.class);
 		columnTranslator = new ColumnTranslator();
 		handlePropertiesSet();
 	}
