@@ -40,6 +40,15 @@ public class AuthorService {
 	}
 
 	@Transactional
+	public TypeMap updateAuthor(Integer id, TypeMap data) {
+		Author author = new Author().selectByIdWithCheckExistence(id);
+		author.setByData(data);
+		author.update();
+
+		return author.toTypeMap();
+	}
+
+	@Transactional
 	public void deleteAuthor(Integer id) {
 		Author author = new Author();
 		author.setAuthorId(id);

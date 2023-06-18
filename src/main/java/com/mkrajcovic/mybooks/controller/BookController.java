@@ -44,7 +44,7 @@ public class BookController {
 
 	// TODO: make grid the home page
 	// TODO: display currently signed user
-	@GetMapping(path = "/grid")
+	@GetMapping(path = "/book")
 	@PreAuthorize("hasRole('USER')")
 	public String grid() {
 		return "bookGrid";
@@ -77,7 +77,7 @@ public class BookController {
 	 * @param book
 	 * @return updated book for jsGrid, because it needs to refresh the updated row
 	 */
-	@PostMapping(path = "/book/{id}", consumes = APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/book/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	@ResponseBody
 	public TypeMap updateBook(@PathVariable Integer id, @RequestBody TypeMap book) {
