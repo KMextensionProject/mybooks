@@ -31,6 +31,7 @@ public final class Select {
 	private Set<OrderBy> orderByColumns;
 	private RowMapper<TypeMap> cMapRowMapper;
 	private ColumnTranslator fieldTranslator;
+	private QueryParams queryParams;
 
 	Select(JdbcTemplate jdbcTemplate, RowMapper<TypeMap> rowMapper, String... columns) {
 		this.jdbcTemplate = jdbcTemplate;
@@ -40,6 +41,7 @@ public final class Select {
 		this.cMapRowMapper = rowMapper;
 		this.orderByColumns = new LinkedHashSet<>();
 		this.fieldTranslator = new ColumnTranslator();
+		this.queryParams = new QueryParams();
 		select(columns);
 	}
 
@@ -51,6 +53,7 @@ public final class Select {
 		this.isWhereClauseApplied = otherSelect.isWhereClauseApplied;
 		this.requestedColumnsCount = otherSelect.requestedColumnsCount;
 		this.orderByColumns = otherSelect.orderByColumns;
+		this.queryParams = otherSelect.queryParams;
 	}
 
 	private Select select(String... columns) {
@@ -143,14 +146,7 @@ public final class Select {
 	}
 
 	public Select where(QueryParams queryParams) {
-		String field;
-		Object value;
-		for (Map.Entry<String, Object> entry : queryParams.getQueryEntries()) {
-			value = entry.getValue();
-			field = fieldTranslator.toColumnName(entry.getKey(), value); // timestamp passed by UI?
-
-			where(field, value);
-		}
+		this.queryParams.addAll(queryParams);
 		return this;
 	}
 
@@ -388,6 +384,9 @@ public final class Select {
 		} else if (limit > 0) {
 			appendLimit();
 		}
+
+		// where on wrapper select
+		appendOuterQueryParams();
 	}
 
 	private void appendWhereStatements() {
@@ -416,6 +415,30 @@ public final class Select {
 		selectBuilder.append(" FETCH FIRST ")
 					 .append(limit)
 					 .append(" ROWS ONLY");
+	}
+
+	private void appendOuterQueryParams() {
+		if (queryParams.isEmpty()) {
+			return;
+		}
+		// reset where builder
+		this.isWhereClauseApplied = false;
+		this.whereBuilder.setLength(0);
+
+		selectBuilder.insert(0, "SELECT * FROM (")
+					 .append(") AS SUBQUERY");
+
+		String field;
+		Object value;
+		for (Map.Entry<String, Object> entry : queryParams.getQueryEntries()) {
+			value = entry.getValue();
+			field = fieldTranslator.toColumnName(entry.getKey(), value); // timestamp passed by UI?
+
+			where(field, value);
+		}
+
+		// append outer where statements
+		appendWhereStatements();
 	}
 
 	private <T> T queryForObject(Class<T> classObj) {

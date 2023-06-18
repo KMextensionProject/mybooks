@@ -13,7 +13,6 @@ import com.mkrajcovic.mybooks.dao.Book;
 import com.mkrajcovic.mybooks.dao.BookAuthor;
 import com.mkrajcovic.mybooks.db.Database;
 import com.mkrajcovic.mybooks.db.QueryParams;
-import com.mkrajcovic.mybooks.db.Select;
 import com.mkrajcovic.mybooks.db.TypeMap;
 
 @Service
@@ -31,7 +30,7 @@ public class BookService {
 	}
 
 	public List<TypeMap> getBooks(QueryParams queryParams) { // add paging through http request headers
-		Select subselect = db.select("A.*", 
+		return db.select("A.*", 
 				"B.s_name AS s_binding_type_label",
 				"C.s_dimensions AS s_format_label",
 				"D.s_code AS s_language_code",
@@ -47,16 +46,8 @@ public class BookService {
 			.join("library.t_book_author BA").on("A.n_book_id", "BA.n_book_id")
 			.join("library.t_author E").on("BA.n_author_id", "E.n_author_id")
 			.where("BA.b_lead_author")
-			.where("A.d_to", "infinity");
-//			.where(queryParams) // ambiguous column names should be resolved by select wrapper
-								// or by explicit where statements that resolve aliases properly
-		if (queryParams.isEmpty()) {
-			return subselect.asList();
-		}
-
-		return db.select()
-			.from(subselect)
-			.where(queryParams) // TODO: internally wrap this in Select class?
+			.where("A.d_to", "infinity")
+			.where(queryParams)
 			.asList();
 	}
 

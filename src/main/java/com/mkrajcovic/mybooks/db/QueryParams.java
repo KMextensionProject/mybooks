@@ -53,6 +53,12 @@ public class QueryParams {
 		params.put(newParamName, value);
 	}
 
+	public void addAll(QueryParams queryParams) {
+		if (queryParams != null) {
+			params.putAll(queryParams.params);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return this.params.toString();
