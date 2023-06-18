@@ -32,6 +32,7 @@ public final class Select {
 	private RowMapper<TypeMap> cMapRowMapper;
 	private ColumnTranslator fieldTranslator;
 	private QueryParams queryParams;
+	private String mainTableAlias;
 
 	Select(JdbcTemplate jdbcTemplate, RowMapper<TypeMap> rowMapper, String... columns) {
 		this.jdbcTemplate = jdbcTemplate;
@@ -42,6 +43,7 @@ public final class Select {
 		this.orderByColumns = new LinkedHashSet<>();
 		this.fieldTranslator = new ColumnTranslator();
 		this.queryParams = new QueryParams();
+		this.mainTableAlias = "";
 		select(columns);
 	}
 
@@ -54,11 +56,15 @@ public final class Select {
 		this.requestedColumnsCount = otherSelect.requestedColumnsCount;
 		this.orderByColumns = otherSelect.orderByColumns;
 		this.queryParams = otherSelect.queryParams;
+		this.mainTableAlias = otherSelect.mainTableAlias;
 	}
 
 	private Select select(String... columns) {
 		if (columns.length != 0) {
 			selectBuilder.append(String.join(", ", columns));
+
+			int aliasEndIndex = columns[0].indexOf('.');
+			mainTableAlias = aliasEndIndex > 0 ? columns[0].substring(0, aliasEndIndex) : mainTableAlias;
 		} else {
 			selectBuilder.append("*");
 		}
@@ -385,7 +391,7 @@ public final class Select {
 			appendLimit();
 		}
 
-		// where on wrapper select
+		// where on possible wrapper select
 		appendOuterQueryParams();
 	}
 
@@ -421,12 +427,16 @@ public final class Select {
 		if (queryParams.isEmpty()) {
 			return;
 		}
-		// reset where builder
+
+		// reset the whereBuilder
 		this.isWhereClauseApplied = false;
 		this.whereBuilder.setLength(0);
 
-		selectBuilder.insert(0, "SELECT * FROM (")
-					 .append(") AS SUBQUERY");
+		// if there is no alias present, query params go to the main statement
+		if (!this.mainTableAlias.isEmpty()) {
+			selectBuilder.insert(0, "SELECT * FROM (")
+					 	 .append(") AS SUBQUERY");
+		}
 
 		String field;
 		Object value;

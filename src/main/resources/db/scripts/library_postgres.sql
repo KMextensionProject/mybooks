@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS library.t_book
     n_format_id integer NOT NULL,
     s_publisher character varying(100) COLLATE pg_catalog."default",
     n_language_id integer NOT NULL,
-	n_series_number integer NOT NULL DEFAULT 0,
+	n_series_number integer,
     d_from timestamp without time zone NOT NULL DEFAULT now(),
     d_to timestamp without time zone NOT NULL DEFAULT 'infinity'::timestamp without time zone,
     CONSTRAINT t_book_pkey PRIMARY KEY (n_book_id),
