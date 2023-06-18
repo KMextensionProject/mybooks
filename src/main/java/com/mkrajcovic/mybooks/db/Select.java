@@ -50,6 +50,7 @@ public final class Select {
 		this.whereBuilder = new StringBuilder(otherSelect.whereBuilder);
 		this.isWhereClauseApplied = otherSelect.isWhereClauseApplied;
 		this.requestedColumnsCount = otherSelect.requestedColumnsCount;
+		this.orderByColumns = otherSelect.orderByColumns;
 	}
 
 	private Select select(String... columns) {
@@ -73,6 +74,22 @@ public final class Select {
 	public Select from(String tableName) {
 		selectBuilder.append(" FROM ")
 					 .append(tableName);
+		return this;
+	}
+
+	/**
+	 * Will automatically append the input select statement in its final state to
+	 * FROM clause.<br>
+	 * This method makes its own copy of the inner select and so no further changes
+	 * will be applied to the select statement provided as input.
+	 */
+	public Select from(Select select) {
+		Select copySelect = new Select(select);
+		copySelect.appendRemainingParts();
+
+		selectBuilder.append(" FROM (")
+					 .append(copySelect)
+					 .append(") AS SUBQUERY_RESULT");
 		return this;
 	}
 

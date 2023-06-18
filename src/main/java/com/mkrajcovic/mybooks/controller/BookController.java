@@ -1,6 +1,6 @@
 package com.mkrajcovic.mybooks.controller;
 
-import static com.mkrajcovic.mybooks.enums.ContentType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.net.URI;
 import java.util.List;
@@ -29,7 +29,7 @@ public class BookController {
 	@Autowired
 	private BookService bookService;
 
-	@GetMapping(path = "/ping", produces = APPLICATION_JSON)
+	@GetMapping(path = "/ping", produces = APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public Map<String, String> ping() {
 		return bookService.ping();
@@ -50,21 +50,21 @@ public class BookController {
 		return "bookGrid";
 	}
 
-	@PostMapping(path = "/book", consumes = APPLICATION_JSON)
+	@PostMapping(path = "/book", consumes = APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<Object> createBook(@RequestBody TypeMap bookData) {
 		Integer id = bookService.createBook(bookData);
 		return ResponseEntity.created(URI.create("/book/" + id)).build();
 	}
 
-	@GetMapping(path = "/book/", produces = APPLICATION_JSON)
+	@GetMapping(path = "/book/", produces = APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('USER')")
 	@ResponseBody
 	public List<TypeMap> listBooks(QueryParams queryParams) {
 		return bookService.getBooks(queryParams);
 	}
 
-	@GetMapping(path = "/book/{id}", produces = APPLICATION_JSON)
+	@GetMapping(path = "/book/{id}", produces = APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('USER')")
 	@ResponseBody
 	public TypeMap getBook(@PathVariable("id") Integer id) {
@@ -77,7 +77,7 @@ public class BookController {
 	 * @param book
 	 * @return updated book for jsGrid, because it needs to refresh the updated row
 	 */
-	@PostMapping(path = "/book/{id}", consumes = APPLICATION_JSON)
+	@PostMapping(path = "/book/{id}", consumes = APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	@ResponseBody
 	public TypeMap updateBook(@PathVariable Integer id, @RequestBody TypeMap book) {

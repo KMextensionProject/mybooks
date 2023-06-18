@@ -31,12 +31,18 @@ $("#jsGrid").jsGrid({
     noDataContent: "Directory is empty",
 
         controller: {
-            loadData: function() {
+            loadData: function(filter) {
+            	// delete unused query parameters
+            	for (var propName in filter) {
+            		if (filter[propName] === "") {
+            			delete filter[propName];
+            		}
+            	}
                 var d = $.Deferred();
                 $.ajax({
-                    // CORS policy enable on local server for now
                     url: "http://localhost:8080/mybooks/book/",
-                    dataType: "json"
+                    dataType: "json",
+                    data: filter
                 }).done(function(response) {
                     d.resolve(response);
                 });
@@ -60,8 +66,6 @@ $("#jsGrid").jsGrid({
                 });
             }
         },
-
-    // ids for labels should be returned
 
     fields: [{
     	name: "book_id",
@@ -94,12 +98,14 @@ $("#jsGrid").jsGrid({
         name: "binding_type_label",
         title: 'Binding',
         type: "text",
-        width: 25
+        width: 25,
+        filtering: false
     }, { // TODO: make as option/select column for update
         name: "format_label",
         title: 'Format',
         type: "text",
-        width: 30
+        width: 30,
+        filtering: false
     }, {
     	name: "publisher",
     	title: "Publisher",
@@ -109,12 +115,14 @@ $("#jsGrid").jsGrid({
         name: "language_code",
         title: "Language",
         type: "text",
-        width: 25
+        width: 25,
+        filtering: false
     },  {
         name: "series_number",
         title: "Series #",
         type: "text",
-        width: 18
+        width: 18,
+        filtering: false
     }, {
         type: "control",
         _createFilterSwitchButton: function() {

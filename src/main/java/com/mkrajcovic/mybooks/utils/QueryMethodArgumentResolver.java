@@ -27,18 +27,7 @@ public class QueryMethodArgumentResolver implements HandlerMethodArgumentResolve
 
 		Map<String, String[]> queryMap = webRequest.getNativeRequest(HttpServletRequest.class).getParameterMap();
 		QueryParams queryParams = new QueryParams();
-		queryMap.forEach((key, values) -> addParamWithBasicTypeConversion(queryParams, key, values));
+		queryMap.forEach((key, values) -> queryParams.addParam(key, values[0].isEmpty() ? null : values[0]));
 		return queryParams;
-	}
-
-	private void addParamWithBasicTypeConversion(QueryParams queryParams, String key, String[] values) {
-		if (key.endsWith("id")) {
-			// TODO: process list of values..
-			queryParams.addParam(key, Integer.valueOf(values[0]));
-		} else if ("truefalse".contains(values[0])) {
-			queryParams.addParam(key, Boolean.valueOf(values[0]));
-		} else {
-			queryParams.addParam(key, values[0]);
-		}
 	}
 }
