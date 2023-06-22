@@ -1,4 +1,7 @@
-package com.mkrajcovic.mybooks.utils;
+package com.mkrajcovic.mybooks.web;
+
+import static com.mkrajcovic.mybooks.utils.StringUtils.isBoolean;
+import static com.mkrajcovic.mybooks.utils.StringUtils.isNumeric;
 
 import java.util.Map;
 
@@ -27,7 +30,17 @@ public class QueryMethodArgumentResolver implements HandlerMethodArgumentResolve
 
 		Map<String, String[]> queryMap = webRequest.getNativeRequest(HttpServletRequest.class).getParameterMap();
 		QueryParams queryParams = new QueryParams();
-		queryMap.forEach((key, values) -> queryParams.addParam(key, values[0].isEmpty() ? null : values[0]));
+		queryMap.forEach((key, values) -> queryParams.addParam(key, values[0].isEmpty() ? null : reType(values[0])));
 		return queryParams;
+	}
+
+	private Object reType(String paramValue) {
+		if (isBoolean(paramValue)) {
+			return Boolean.valueOf(paramValue);
+		} else if (isNumeric(paramValue)) {
+			return Integer.valueOf(paramValue);
+		} else {
+			return paramValue;
+		}
 	}
 }

@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import com.mkrajcovic.mybooks.utils.QueryMethodArgumentResolver;
+import com.mkrajcovic.mybooks.web.QueryMethodArgumentResolver;
 
 @EnableWebMvc
 public class WebMvcCustomConfig implements WebMvcConfigurer {
