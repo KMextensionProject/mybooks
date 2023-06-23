@@ -50,8 +50,12 @@ public class TypeMap extends LinkedCaseInsensitiveMap<Object> {
 		} else if (object instanceof Integer) {
 			return (Integer) object;
 		} else if (object instanceof CharSequence) {
+			String stringValue = (String) object;
+			if (stringValue.isEmpty()) {
+				return null;
+			}
 			try {
-				return Integer.parseInt(object.toString());
+				return Integer.parseInt(stringValue);
 			} catch (NumberFormatException nfe) {
 				// do nothing
 			}
