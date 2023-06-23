@@ -13,15 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 // this represents the filter chain
-@EnableWebSecurity(debug = true) // has @Configuration on it already
+@EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private DataSource dataSource;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -31,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/logout").permitAll()
 			.antMatchers("/admin").hasRole("ADMIN")
 			.antMatchers("/**").hasRole("USER")
-			.and().formLogin().defaultSuccessUrl("/home", true) //when mybooks/ is typed, redirect automatically?
+			.and().formLogin().defaultSuccessUrl("/home", false) //when mybooks/ is typed, redirect automatically?
 			.and().logout()
 			.and().httpBasic() // TODO: remove this after testing
 			.and().csrf().disable();
@@ -41,12 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.jdbcAuthentication()
 			.dataSource(dataSource)
-			.passwordEncoder(passwordEncoder)
-//			.usersByUsernameQuery("SELECT * FROM auth.users WHERE username = ? AND enabled = true")
-//			.authoritiesByUsernameQuery("SELECT username, authority FROM auth.authorities WHERE username = ?")
-//			.rolePrefix("")
-//			.userCache() // TODO: implement user cache
-			;
+			.passwordEncoder(getPasswordEncoder());
 	}
 
 	@Bean
