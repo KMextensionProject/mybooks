@@ -44,7 +44,7 @@ public class BookController {
 
 	// TODO: make grid the home page
 	// TODO: display currently signed user
-	@GetMapping(path = "/book")
+	@GetMapping(path = "/books")
 	@PreAuthorize("hasRole('USER')")
 	public String grid() {
 		return "bookGrid";

@@ -332,6 +332,14 @@ public final class Select {
 		return this;
 	}
 
+	/**
+	 * Applies the lock for queried rows
+	 */
+//	public Select lockForUpdate() {
+//		this.lockForUpdate = true;
+//		return this;
+//	}
+
 	// TODO: add wherePreparedStatement() - dynamic values
 	// TODO: if it returns nothing, let it do it without throwing an exception but return empty map instead
 	public TypeMap asMap() {

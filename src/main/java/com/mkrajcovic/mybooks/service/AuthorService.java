@@ -48,6 +48,9 @@ public class AuthorService {
 		return author.toTypeMap();
 	}
 
+	// If the author gets deleted, what will be done to a book?
+	// should we have delete service available?
+	// if so, delete author only if there is no assignment present on books
 	@Transactional
 	public void deleteAuthor(Integer id) {
 		Author author = new Author();

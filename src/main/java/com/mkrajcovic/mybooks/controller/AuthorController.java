@@ -27,7 +27,7 @@ public class AuthorController {
 	@Autowired
 	private AuthorService authorService;
 
-	@GetMapping(path = "/author")
+	@GetMapping(path = "/authors")
 	@PreAuthorize("hasRole('USER')")
 	public String getAuthorGrid() {
 		return "authorGrid";
@@ -37,7 +37,6 @@ public class AuthorController {
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<Object> createAuthor(@RequestBody TypeMap authorMap) {
 		Integer id = authorService.createAuthor(authorMap);
-		// HttpHeaders setLocation()
 		return ResponseEntity.created(URI.create("/author/" + id)).build();
 	}
 

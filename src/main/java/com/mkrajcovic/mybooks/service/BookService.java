@@ -1,5 +1,6 @@
 package com.mkrajcovic.mybooks.service;
 
+import static com.mkrajcovic.mybooks.db.Select.OrderByDirection.DESC;
 import static java.util.Collections.singletonMap;
 
 import java.util.List;
@@ -46,16 +47,27 @@ public class BookService {
 			.join("library.t_book_author BA").on("A.n_book_id", "BA.n_book_id")
 			.join("library.t_author E").on("BA.n_author_id", "E.n_author_id")
 			.where("BA.b_lead_author")
-			.where("A.d_to", "infinity")
+			.where("A.d_to", "infinity") // do this automatically by calling a view
 			.where(queryParams)
 			.asList();
 	}
 
 	public TypeMap getBook(Integer id) {
-		return db.select()
+		TypeMap book = db.select()
 			.from("library.t_book")
 			.where("n_book_id", id)
 			.asMap();
+
+		List<TypeMap> authors = db.select("A.*", "BA.b_lead_author")
+			.from("library.t_author A")
+			.join("library.t_book_author BA")
+			.on("A.n_author_id", "BA.n_author_id")
+			.where("BA.n_book_id", id)
+			.orderBy("BA.b_lead_author", DESC) // leading author first
+			.asList();
+
+		book.put("authors", authors);
+		return book;
 	}
 
 	@Transactional
