@@ -85,6 +85,16 @@ INSERT INTO library.t_author (s_author_name) VALUES ('Dan Brown');
 INSERT INTO library.t_author (s_author_name) VALUES ('Lee Child');
 INSERT INTO library.t_author (s_author_name) VALUES ('George R.R. Martin');
 INSERT INTO library.t_author (s_author_name) VALUES ('J.K. Rowling');
+INSERT INTO library.t_author (s_author_name) VALUES ('Karin Slaughter');
+INSERT INTO library.t_author (s_author_name) VALUES ('Simon Becket');
+INSERT INTO library.t_author (s_author_name) VALUES ('David Baldaci');
+INSERT INTO library.t_author (s_author_name) VALUES ('Frank Herbert');
+INSERT INTO library.t_author (s_author_name) VALUES ('Stephen King');
+INSERT INTO library.t_author (s_author_name) VALUES ('Michael Dibdin');
+INSERT INTO library.t_author (s_author_name) VALUES ('Andrzej Sapkowski');
+INSERT INTO library.t_author (s_author_name) VALUES ('Andy Weir');
+INSERT INTO library.t_author (s_author_name) VALUES ('Tom Rob Smith');
+INSERT INTO library.t_author (s_author_name) VALUES ('Jo Nesbo');
 
 
 -- Table: library.t_book
