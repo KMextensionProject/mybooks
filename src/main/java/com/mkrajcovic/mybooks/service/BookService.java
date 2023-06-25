@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mkrajcovic.mybooks.dao.Book;
 import com.mkrajcovic.mybooks.dao.BookAuthor;
 import com.mkrajcovic.mybooks.db.Database;
+import com.mkrajcovic.mybooks.db.Paging;
 import com.mkrajcovic.mybooks.db.QueryParams;
 import com.mkrajcovic.mybooks.db.TypeMap;
 
@@ -30,8 +31,8 @@ public class BookService {
 		return "home";
 	}
 
-	public List<TypeMap> getBooks(QueryParams queryParams) { // add paging through http request headers
-		return db.select("A.*", 
+	public List<TypeMap> getBooks(QueryParams queryParams, Paging paging) {
+		return db.select("A.*",
 				"B.s_name AS s_binding_type_label",
 				"C.s_dimensions AS s_format_label",
 				"D.s_code AS s_language_code",
@@ -49,6 +50,7 @@ public class BookService {
 			.where("BA.b_lead_author")
 			.where("A.d_to", "infinity") // do this automatically by calling a view
 			.where(queryParams)
+			.range(paging) // null safe
 			.asList();
 	}
 

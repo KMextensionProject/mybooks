@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import com.mkrajcovic.mybooks.web.PagingMethodArgumentResolver;
 import com.mkrajcovic.mybooks.web.QueryMethodArgumentResolver;
 
 @EnableWebMvc
@@ -16,6 +17,7 @@ public class WebMvcCustomConfig implements WebMvcConfigurer {
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
 		resolvers.add(new QueryMethodArgumentResolver());
+		resolvers.add(new PagingMethodArgumentResolver());
 	}
 
 	@Bean

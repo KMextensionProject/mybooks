@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.mkrajcovic.mybooks.db.Paging;
 import com.mkrajcovic.mybooks.db.QueryParams;
 import com.mkrajcovic.mybooks.db.TypeMap;
 import com.mkrajcovic.mybooks.service.BookService;
@@ -60,8 +61,8 @@ public class BookController {
 	@GetMapping(path = "/book/", produces = APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('USER')")
 	@ResponseBody
-	public List<TypeMap> listBooks(QueryParams queryParams) {
-		return bookService.getBooks(queryParams);
+	public List<TypeMap> listBooks(QueryParams queryParams, Paging paging) { // add interceptor to set cnt
+		return bookService.getBooks(queryParams, paging);
 	}
 
 	@GetMapping(path = "/book/{id}", produces = APPLICATION_JSON_VALUE)

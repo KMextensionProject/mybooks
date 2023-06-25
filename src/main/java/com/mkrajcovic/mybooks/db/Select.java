@@ -419,7 +419,7 @@ public final class Select {
 
 	private void appendPaging() {
 		selectBuilder.append(" OFFSET ")
-					 .append(this.pagingBound.getFrom() - 1)
+					 .append(this.pagingBound.getFrom())
 					 .append(" ROWS FETCH FIRST ")
 					 .append(this.pagingBound.getTo())
 					 .append(" ROWS ONLY");
