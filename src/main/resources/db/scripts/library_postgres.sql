@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS library.t_book
     n_format_id integer NOT NULL,
     s_publisher character varying(100) COLLATE pg_catalog."default",
     n_language_id integer NOT NULL,
-    n_series_number integer NOT NULL DEFAULT 0,
+    n_series_number integer,
     d_from timestamp without time zone NOT NULL DEFAULT now(),
     d_to timestamp without time zone NOT NULL DEFAULT 'infinity'::timestamp without time zone,
     n_genre_id integer NOT NULL DEFAULT 10,
@@ -174,7 +174,6 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS library.t_book
     OWNER to postgres;
 
--- TODO: add year published?
 INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) 	VALUES ('9780552159708', 'Angels & Demons', 	624, 2, 11, 'Transworld Publishers Limited', 1, 1, 3);
 INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) 	VALUES ('9780552159715', 'The Da Vinci Code',	864, 2, 10, 'Transworld Publishers Limited', 1, 2, 3);
 INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) 	VALUES ('9780552149525', 'The Lost Symbol', 	672, 2, 10, 'Transworld Publishers Limited', 1, 3, 3);
@@ -182,6 +181,8 @@ INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_forma
 INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id)	VALUES ('9780552174169', 'Origin', 				480, 2, 10, 'Transworld Publishers Limited', 1, 5, 3);
 INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id) 					VALUES ('9780552161251', 'Digital Fortress', 	512, 2, 10, 'Transworld Publishers Limited', 1, 3);
 INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id) 					VALUES ('9780552159722', 'Deception Point', 	580, 2, 10, 'Transworld Publishers Limited', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                   VALUES ('9781784703820', 'Blood On Snow',       172, 2, 10, 'VINTAGE', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                   VALUES ('9780099551744', 'The Snowman',         550, 2, 10, 'VINTAGE', 1, 3);
 
 
 -- Table: library.t_book_author
@@ -207,13 +208,14 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS library.t_book_author
     OWNER to postgres;
 
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (1, 1, true);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (2, 1, true);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (3, 1, true);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (4, 1, true);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (5, 1, true);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (6, 1, true);
-INSERT INTO library.t_book_author (n_book_id, n_author_id) VALUES (7, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (1, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (2, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (3, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (4, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (5, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (6, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (7, 1, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (8, 14, true);
 
 
 ---------------------------------------
