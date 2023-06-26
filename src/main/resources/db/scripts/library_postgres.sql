@@ -25,7 +25,7 @@ INSERT INTO library_enum.e_binding_type (s_name) VALUES ('Folding-picture');
 CREATE TABLE IF NOT EXISTS library_enum.e_format
 (
     n_format_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    s_code character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    s_code character varying(30) COLLATE pg_catalog."default" NOT NULL,
     s_dimensions character varying(20) COLLATE pg_catalog."default" NOT NULL,
     d_from timestamp without time zone NOT NULL DEFAULT now(),
     d_to timestamp without time zone NOT NULL DEFAULT 'infinity'::timestamp without time zone,
@@ -37,11 +37,47 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS library_enum.e_format
     OWNER to postgres;
 
+
 INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('A4', '210 × 297 mm');
 INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('A5', '148 × 210 mm');
 INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('A6', '105 × 148 mm');
 INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('A7', '74 × 105 mm');
 INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('A8', '52 × 74 mm');
+INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('A' ,'178 x 111mm');
+INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('B (UK)' ,'198 x 129mm');
+INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('B (US)' ,'203 x 127mm');
+INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('Demy' ,'216 x 138mm');
+INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('American Royal' ,'229 x 152mm');
+INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('Royal' ,'234 x 156mm');
+INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('Pinched Crown Quarto' ,'up to 248 x 171mm');
+INSERT INTO library_enum.e_format (s_code, s_dimensions) VALUES ('Crown Quarto' ,'246 x 189mm');
+
+
+-- Table: library_enum.e_genre
+-- DROP TABLE IF EXISTS library_enum.e_genre;
+CREATE TABLE IF NOT EXISTS library_enum.e_genre
+(
+    n_genre_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    s_name character varying(25) COLLATE pg_catalog."default" NOT NULL,
+    d_from timestamp without time zone NOT NULL DEFAULT now(),
+    d_to timestamp without time zone NOT NULL DEFAULT 'infinity'::timestamp without time zone,
+    CONSTRAINT e_genre_pkey PRIMARY KEY (n_genre_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS library_enum.e_genre
+    OWNER to postgres;
+
+INSERT INTO library_enum.e_genre (s_name) VALUES ('mystery');
+INSERT INTO library_enum.e_genre (s_name) VALUES ('thriller');
+INSERT INTO library_enum.e_genre (s_name) VALUES ('horror');
+INSERT INTO library_enum.e_genre (s_name) VALUES ('historical');
+INSERT INTO library_enum.e_genre (s_name) VALUES ('romance');
+INSERT INTO library_enum.e_genre (s_name) VALUES ('western');
+INSERT INTO library_enum.e_genre (s_name) VALUES ('science fiction');
+INSERT INTO library_enum.e_genre (s_name) VALUES ('fantasy');
+INSERT INTO library_enum.e_genre (s_name) VALUES ('educational');
 
 
 -- Table: library_enum.e_language
@@ -109,25 +145,28 @@ CREATE TABLE IF NOT EXISTS library.t_book
     n_format_id integer NOT NULL,
     s_publisher character varying(100) COLLATE pg_catalog."default",
     n_language_id integer NOT NULL,
-	n_series_number integer,
+    n_series_number integer NOT NULL DEFAULT 0,
     d_from timestamp without time zone NOT NULL DEFAULT now(),
     d_to timestamp without time zone NOT NULL DEFAULT 'infinity'::timestamp without time zone,
+    n_genre_id integer NOT NULL DEFAULT 10,
     CONSTRAINT t_book_pkey PRIMARY KEY (n_book_id),
     CONSTRAINT n_binding_fk FOREIGN KEY (n_binding_type_id)
         REFERENCES library_enum.e_binding_type (n_binding_type_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE SET NULL
-        NOT VALID,
+        ON DELETE SET NULL,
     CONSTRAINT n_format_fk FOREIGN KEY (n_format_id)
         REFERENCES library_enum.e_format (n_format_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE SET NULL
+        ON DELETE SET NULL,
+    CONSTRAINT n_genre_fk FOREIGN KEY (n_genre_id)
+        REFERENCES library_enum.e_genre (n_genre_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
         NOT VALID,
     CONSTRAINT n_language_fk FOREIGN KEY (n_language_id)
         REFERENCES library_enum.e_language (n_language_id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE SET NULL
-        NOT VALID
 )
 
 TABLESPACE pg_default;
@@ -136,13 +175,13 @@ ALTER TABLE IF EXISTS library.t_book
     OWNER to postgres;
 
 -- TODO: add year published?
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number) 	VALUES ('9780552159708', 'Angels & Demons', 	624, 2, 5, 'Transworld Publishers Limited', 1, 1);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number) 	VALUES ('9780552159715', 'The Da Vinci Code',	864, 2, 2, 'Transworld Publishers Limited', 1, 2);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number) 	VALUES ('9780552149525', 'The Lost Symbol', 	672, 2, 2, 'Transworld Publishers Limited', 1, 3);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number) 	VALUES ('9780593072493', 'Inferno', 			480, 1, 2, 'Transworld Publishers Limited', 1, 4);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number)	VALUES ('9780552174169', 'Origin', 				480, 2, 2, 'Transworld Publishers Limited', 1, 5);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id) 					VALUES ('9780552161251', 'Digital Fortress', 	512, 2, 2, 'Transworld Publishers Limited', 1);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id) 					VALUES ('9780552159722', 'Deception Point', 	580, 2, 2, 'Transworld Publishers Limited', 1);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) 	VALUES ('9780552159708', 'Angels & Demons', 	624, 2, 11, 'Transworld Publishers Limited', 1, 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) 	VALUES ('9780552159715', 'The Da Vinci Code',	864, 2, 10, 'Transworld Publishers Limited', 1, 2, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) 	VALUES ('9780552149525', 'The Lost Symbol', 	672, 2, 10, 'Transworld Publishers Limited', 1, 3, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) 	VALUES ('9780593072493', 'Inferno', 			480, 2, 10, 'Transworld Publishers Limited', 1, 4, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id)	VALUES ('9780552174169', 'Origin', 				480, 2, 10, 'Transworld Publishers Limited', 1, 5, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id) 					VALUES ('9780552161251', 'Digital Fortress', 	512, 2, 10, 'Transworld Publishers Limited', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id) 					VALUES ('9780552159722', 'Deception Point', 	580, 2, 10, 'Transworld Publishers Limited', 1, 3);
 
 
 -- Table: library.t_book_author
