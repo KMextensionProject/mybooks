@@ -53,6 +53,18 @@ public class AuthorService {
 	// if so, delete author only if there is no assignment present on books
 	@Transactional
 	public void deleteAuthor(Integer id) {
+		// separate method
+		Long relationsCount = db.select("count(*)") // select author id and book id for log?
+			.from("library.t_book_author")
+			.where("n_author_id", id)
+			.asLong();
+
+		// validate method
+		if (relationsCount != null && relationsCount > 0) {
+			throw new RuntimeException("Cannot delete author assigned to an existing book");
+		}
+
+		// perform delete
 		Author author = new Author();
 		author.setAuthorId(id);
 		author.delete();
