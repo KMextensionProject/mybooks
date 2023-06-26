@@ -56,6 +56,7 @@ public class AuthorController {
 
 	@PostMapping(path = "/author/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
+	@ResponseBody
 	public TypeMap updateAuthor(@PathVariable Integer id, @RequestBody TypeMap data) {
 		return authorService.updateAuthor(id, data);
 	}
