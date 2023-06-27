@@ -24,7 +24,7 @@ $("#jsGrid").jsGrid({
 
     //for loadData method Need to set auto load true
     autoload: true,
-    pageSize: 20,
+    pageSize: 25,
     pageButtonCount: 3,
     deleteConfirm: "Do you really want to delete this book?",
 
@@ -92,7 +92,7 @@ $("#jsGrid").jsGrid({
     }, {
         name: "pages",
         title: 'Pages',
-        type: "text",
+        type: "number",
         width: 30
     }, { // TODO: make as option/select column for update
         name: "binding_type_label",

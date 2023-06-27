@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mkrajcovic.mybooks.dao.Author;
 import com.mkrajcovic.mybooks.db.Database;
+import com.mkrajcovic.mybooks.db.Paging;
+import com.mkrajcovic.mybooks.db.QueryParams;
 import com.mkrajcovic.mybooks.db.TypeMap;
 
 @Service
@@ -25,10 +27,11 @@ public class AuthorService {
 		return author.getAuthorId();
 	}
 
-	// incorporate searching
-	public List<TypeMap> listAuthors() {
+	public List<TypeMap> listAuthors(QueryParams queryParams, Paging paging) {
 		return db.select()
 			.from("library.t_author")
+			.where(queryParams)
+			.range(paging)
 			.asList();
 	}
 
