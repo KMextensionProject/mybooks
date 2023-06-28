@@ -175,21 +175,37 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS library.t_book
     OWNER to postgres;
 
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780552159708', 'Angels & Demons', 	   620, 2, 11, 'Transworld Publishers Limited', 1, 1, 3);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780552159715', 'The Da Vinci Code',   590, 2, 10, 'Transworld Publishers Limited', 1, 2, 3);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780552149525', 'The Lost Symbol', 	   670, 2, 10, 'Transworld Publishers Limited', 1, 3, 3);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780593072493', 'Inferno', 			   620, 2, 10, 'Transworld Publishers Limited', 1, 4, 3);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780552174169', 'Origin', 			   542, 2, 10, 'Transworld Publishers Limited', 1, 5, 3);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id) 				   VALUES ('9780552161251', 'Digital Fortress',    510, 2, 10, 'Transworld Publishers Limited', 1, 3);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id) 				   VALUES ('9780552159722', 'Deception Point', 	   585, 2, 10, 'Transworld Publishers Limited', 1, 3);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9781784703820', 'Blood On Snow',       172, 2, 10, 'VINTAGE', 1, 3);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9780099551744', 'The Snowman',         550, 2, 10, 'VINTAGE', 1, 3);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780006479888', 'A Game Of Thrones',   801, 2, 10, 'Harper Voyager', 1, 1, 9);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780006479895', 'A Clash Of Kings',    913, 2, 10, 'Harper Voyager', 1, 2, 9);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780006479901', 'A Storm Of Swords 1', 623, 2, 10, 'Harper Voyager', 1, 3, 9);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780007119554', 'A Storm Of Swords 2', 607, 2, 10, 'Harper Voyager', 1, 4, 9);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780006486121', 'A Feast For Crows',   849, 2, 10, 'Harper Voyager', 1, 5, 9);
-INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780006486114', 'A Dance With Dragons',1181,2, 10, 'Harper Voyager', 1, 6, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780552159708', 'Angels & Demons', 	        620, 2, 11, 'Transworld Publishers Limited', 1, 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780552159715', 'The Da Vinci Code',        590, 2, 10, 'Transworld Publishers Limited', 1, 2, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780552149525', 'The Lost Symbol', 	        670, 2, 10, 'Transworld Publishers Limited', 1, 3, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780593072493', 'Inferno', 			        620, 2, 10, 'Transworld Publishers Limited', 1, 4, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780552174169', 'Origin', 			        542, 2, 10, 'Transworld Publishers Limited', 1, 5, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id) 				   VALUES ('9780552161251', 'Digital Fortress',         510, 2, 10, 'Transworld Publishers Limited', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id) 				   VALUES ('9780552159722', 'Deception Point', 	        585, 2, 10, 'Transworld Publishers Limited', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9781784703820', 'Blood On Snow',            172, 2, 10, 'VINTAGE', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9780099551744', 'The Snowman',              550, 2, 10, 'VINTAGE', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780006479888', 'A Game Of Thrones',        801, 2, 10, 'Harper Voyager', 1, 1, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780006479895', 'A Clash Of Kings',         913, 2, 10, 'Harper Voyager', 1, 2, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780006479901', 'A Storm Of Swords 1',      623, 2, 10, 'Harper Voyager', 1, 3, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780007119554', 'A Storm Of Swords 2',      607, 2, 10, 'Harper Voyager', 1, 4, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780006486121', 'A Feast For Crows',        849, 2, 10, 'Harper Voyager', 1, 5, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9780006486114', 'A Dance With Dragons',     1181,2, 10, 'Harper Voyager', 1, 6, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9780553824797', 'Whispers Of The Dead',     477, 2, 10, 'Bantam Books', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9780553817492', 'The Chemistry Of Dead',    444, 2, 10, 'Bantam Books', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9780553817508', 'Written In Bone',          492, 2, 10, 'Bantam Books', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9780553825596', 'The Calling Of The Grave', 457, 2, 10, 'Bantam Books', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9781471137853', 'Child 44',                 478, 2, 10, 'Simon and Schuster', 1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9780330518048', 'True Blue',                444, 2, 10, 'PAN',   1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9781101905555', 'The Martian',              492, 2, 10, 'Crown', 1, 8);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_genre_id)                  VALUES ('9780571154210', 'Ratking',                  457, 2, 10, 'Faber and Faber',    1, 3);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9781444723441', 'The Gunslinger',           238, 2, 11, 'HODDER', 1, 1, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9781444723458', 'The Drawing Of The Three', 455, 2, 11, 'HODDER', 1, 2, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9781444723465', 'The Waste Lands',          584, 2, 11, 'HODDER', 1, 3, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9781444723472', 'Wizadr And Glass',         845, 2, 11, 'HODDER', 1, 4, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9781444723489', 'Wolves Of The Calla',      770, 2, 11, 'HODDER', 1, 5, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9781444723496', 'Song Of Susannah',         436, 2, 11, 'HODDER', 1, 6, 9);
+INSERT INTO library.t_book (s_isbn, s_title, n_pages, n_binding_type_id, n_format_id, s_publisher, n_language_id, n_series_number, n_genre_id) VALUES ('9781444723502', 'The Dark Tower',           686, 2, 11, 'HODDER', 1, 7, 9);
+
 
 
 -- Table: library.t_book_author
@@ -230,7 +246,21 @@ INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES
 INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (13,  3, true);
 INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (14,  3, true);
 INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (15,  3, true);
-
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (16, 11, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (17, 11, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (18, 11, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (19, 11, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (20, 18, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (21, 12, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (22, 17, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (23, 15, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (24,  9, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (25,  9, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (26,  9, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (27,  9, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (28,  9, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (29,  9, true);
+INSERT INTO library.t_book_author (n_book_id, n_author_id, b_lead_author) VALUES (30,  9, true);
 
 ---------------------------------------
 select * from library_enum.e_binding_type;

@@ -24,7 +24,7 @@ $("#jsGrid").jsGrid({
 
     //for loadData method Need to set auto load true
     autoload: true,
-    pageSize: 25,
+    pageSize: 20,
     pageButtonCount: 3,
     deleteConfirm: "Do you really want to delete this book?",
 
