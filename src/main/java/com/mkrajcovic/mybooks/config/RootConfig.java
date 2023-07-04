@@ -1,5 +1,9 @@
 package com.mkrajcovic.mybooks.config;
 
+import static com.mkrajcovic.mybooks.enums.CacheNames.BINDING;
+import static com.mkrajcovic.mybooks.enums.CacheNames.FORMAT;
+import static com.mkrajcovic.mybooks.enums.CacheNames.LANGUAGE;
+
 import java.util.Arrays;
 
 import javax.sql.DataSource;
@@ -58,28 +62,15 @@ public class RootConfig {
 		return pool;
 	}
 
-//	@Bean
-//	public DataSource getDataSource() {
-//		DriverManagerDataSource dataSource = new DriverManagerDataSource(
-//			environment.getProperty("db.url"),
-//			environment.getProperty("db.usr"),
-//			environment.getProperty("db.pwd"));
-//
-//		dataSource.setDriverClassName(environment.getProperty("db.dcn"));
-//		// redirect spring security predefined model to specific schema 
-//		// so we don't have to configure SQL queries explicitly
-//		dataSource.setSchema(environment.getProperty("db.sec.schema"));
-//		return dataSource;
-//	}
-
 	@Bean
 	public CacheManager cacheManager() {
 		SimpleCacheManager cacheManager = new SimpleCacheManager();
 		cacheManager.setCaches(Arrays.asList(
-				new ConcurrentMapCache("format"),
-				new ConcurrentMapCache("binding"),
-				new ConcurrentMapCache("language")));
+				new ConcurrentMapCache(FORMAT),
+				new ConcurrentMapCache(BINDING),
+				new ConcurrentMapCache(LANGUAGE)));
 
 		return cacheManager;
 	}
+
 }
