@@ -82,12 +82,12 @@ $("#jsGrid").jsGrid({
         name: "title",
         title: 'Title',
         type: "text",
-        width: 50
+        width: 70
     }, {
         name: "author_name",
         title: 'Leading author',
         type: "text",
-        width: 50,
+        width: 40,
         editing: false
     }, {
         name: "pages",
@@ -122,6 +122,7 @@ $("#jsGrid").jsGrid({
         title: "Series #",
         type: "text",
         width: 18,
+        visible: false,
         filtering: false
     }, {
         type: "control",

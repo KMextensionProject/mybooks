@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.mkrajcovic.mybooks.controller.RequestCallTimeInterceptor;
+import com.mkrajcovic.mybooks.web.RequestCallTimeInterceptor;
 
 @Configuration
 public class WebMvcHandlers implements WebMvcConfigurer {

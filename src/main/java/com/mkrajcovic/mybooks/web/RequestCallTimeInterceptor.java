@@ -1,4 +1,4 @@
-package com.mkrajcovic.mybooks.controller;
+package com.mkrajcovic.mybooks.web;
 
 import java.util.logging.Logger;
 
