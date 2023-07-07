@@ -19,9 +19,6 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS library_enum.e_binding_type
     OWNER to postgres;
 
-INSERT INTO library_enum.e_binding_type (s_name) VALUES ('Hard cover');
-INSERT INTO library_enum.e_binding_type (s_name) VALUES ('Paperback');
-INSERT INTO library_enum.e_binding_type (s_name) VALUES ('Folding-picture');
 
 
 -- Table: library_enum.e_format
